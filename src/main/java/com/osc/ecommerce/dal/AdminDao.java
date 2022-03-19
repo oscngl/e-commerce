@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface AdminDao extends JpaRepository<Admin, Integer> {
 
-    Admin findByEmail(String email);
+    Admin findByConfirmedIsTrueAndEmail(String email);
     List<Admin> findAllByConfirmedIsTrue();
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface SupplierDao extends JpaRepository<Supplier, Integer> {
 
-    Supplier findByEmail(String email);
+    Supplier findByConfirmedIsTrueAndEmail(String email);
     List<Supplier> findAllByConfirmedIsTrue();
 
 }
