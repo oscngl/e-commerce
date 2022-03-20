@@ -1,10 +1,14 @@
 package com.osc.ecommerce.entities.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SupplierDto {
 
     @NotEmpty(message = "Name is required!")

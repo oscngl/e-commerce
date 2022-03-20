@@ -2,10 +2,16 @@ package com.osc.ecommerce.entities.dtos;
 
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.concretes.Supplier;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDto {
 
     @NotEmpty(message = "Name is required!")
@@ -16,11 +22,11 @@ public class ProductDto {
     @NotBlank(message = "Description is required!")
     private String description;
 
-    private String photoUrl;
-
     @NotEmpty(message = "Price is required!")
     @NotBlank(message = "Price is required!")
     private int price;
+
+    private String photoUrl;
 
     @NotEmpty(message = "Category is required!")
     @NotBlank(message = "Category is required!")
