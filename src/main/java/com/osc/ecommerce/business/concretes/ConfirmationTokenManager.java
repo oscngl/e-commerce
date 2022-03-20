@@ -5,7 +5,6 @@ import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.ConfirmationTokenDao;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class ConfirmationTokenManager implements ConfirmationTokenService {
 
     private final ConfirmationTokenDao confirmationTokenDao;
-    private final ModelMapper modelMapper;
 
     @Override
     public Result save(ConfirmationToken confirmationToken) {
@@ -24,7 +22,7 @@ public class ConfirmationTokenManager implements ConfirmationTokenService {
     @Override
     public DataResult<ConfirmationToken> getByToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenDao.findByToken(token);
-        if(confirmationToken.getToken() == null) {
+        if(confirmationToken == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(confirmationToken);

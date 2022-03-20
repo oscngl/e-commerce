@@ -21,7 +21,7 @@ public class SupplierManager implements SupplierService {
     @Override
     public Result save(SupplierDto supplierDto) {
         Supplier exists = supplierDao.findByConfirmedIsTrueAndEmail(supplierDto.getEmail());
-        if(exists.getEmail() != null) {
+        if(exists != null) {
             return new ErrorResult("Email already taken!");
         } else {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
@@ -32,8 +32,8 @@ public class SupplierManager implements SupplierService {
 
     @Override
     public DataResult<Supplier> getById(int id) {
-        Supplier supplier = supplierDao.findById(id).get();
-        if(supplier.getEmail() == null) {
+        Supplier supplier = supplierDao.findById(id).orElse(null);
+        if(supplier == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(supplier);
@@ -42,13 +42,13 @@ public class SupplierManager implements SupplierService {
 
     @Override
     public DataResult<List<Supplier>> getAll() {
-        return new SuccessDataResult<>(supplierDao.findAll());
+        return new SuccessDataResult<>(supplierDao.findAllByConfirmedIsTrue());
     }
 
     @Override
     public DataResult<Supplier> getByEmail(String email) {
         Supplier supplier = supplierDao.findByConfirmedIsTrueAndEmail(email);
-        if(supplier.getEmail() == null) {
+        if(supplier == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(supplier);

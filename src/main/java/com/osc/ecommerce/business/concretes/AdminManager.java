@@ -21,7 +21,7 @@ public class AdminManager implements AdminService {
     @Override
     public Result save(AdminDto adminDto) {
         Admin exists = adminDao.findByConfirmedIsTrueAndEmail(adminDto.getEmail());
-        if(exists.getEmail() != null) {
+        if(exists != null) {
             return new ErrorResult("Email already taken!");
         } else {
             Admin admin = modelMapper.map(adminDto, Admin.class);
@@ -32,8 +32,8 @@ public class AdminManager implements AdminService {
 
     @Override
     public DataResult<Admin> getById(int id) {
-        Admin admin = adminDao.findById(id).get();
-        if(admin.getEmail() == null) {
+        Admin admin = adminDao.findById(id).orElse(null);
+        if(admin == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(admin);
@@ -42,13 +42,13 @@ public class AdminManager implements AdminService {
 
     @Override
     public DataResult<List<Admin>> getAll() {
-        return new SuccessDataResult<>(adminDao.findAll());
+        return new SuccessDataResult<>(adminDao.findAllByConfirmedIsTrue());
     }
 
     @Override
     public DataResult<Admin> getByEmail(String email) {
         Admin admin = adminDao.findByConfirmedIsTrueAndEmail(email);
-        if(admin.getEmail() == null) {
+        if(admin == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(admin);

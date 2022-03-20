@@ -21,7 +21,7 @@ public class CustomerManager implements CustomerService {
     @Override
     public Result save(CustomerDto customerDto) {
         Customer exists = customerDao.findByConfirmedIsTrueAndEmail(customerDto.getEmail());
-        if(exists.getEmail() != null) {
+        if(exists != null) {
             return new ErrorResult("Email already taken!");
         } else {
             Customer customer = modelMapper.map(customerDto, Customer.class);
@@ -32,8 +32,8 @@ public class CustomerManager implements CustomerService {
 
     @Override
     public DataResult<Customer> getById(int id) {
-        Customer customer = customerDao.findById(id).get();
-        if(customer.getEmail() == null) {
+        Customer customer = customerDao.findById(id).orElse(null);
+        if(customer == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(customer);
@@ -42,13 +42,13 @@ public class CustomerManager implements CustomerService {
 
     @Override
     public DataResult<List<Customer>> getAll() {
-        return new SuccessDataResult<>(customerDao.findAll());
+        return new SuccessDataResult<>(customerDao.findAllByConfirmedIsTrue());
     }
 
     @Override
     public DataResult<Customer> getByEmail(String email) {
         Customer customer = customerDao.findByConfirmedIsTrueAndEmail(email);
-        if(customer.getEmail() == null) {
+        if(customer == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(customer);

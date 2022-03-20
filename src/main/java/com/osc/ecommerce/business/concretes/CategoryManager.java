@@ -21,7 +21,7 @@ public class CategoryManager implements CategoryService {
     @Override
     public Result save(CategoryDto categoryDto) {
         Category exists = categoryDao.findByName(categoryDto.getName());
-        if(exists.getName() != null) {
+        if(exists != null) {
             return new ErrorResult("Category already exists!");
         } else {
             Category category = modelMapper.map(categoryDto, Category.class);
@@ -32,8 +32,8 @@ public class CategoryManager implements CategoryService {
 
     @Override
     public DataResult<Category> getById(int id) {
-        Category category = categoryDao.findById(id).get();
-        if(category.getName() == null) {
+        Category category = categoryDao.findById(id).orElse(null);
+        if(category == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(category);
@@ -48,7 +48,7 @@ public class CategoryManager implements CategoryService {
     @Override
     public DataResult<Category> getByName(String name) {
         Category category = categoryDao.findByName(name);
-        if(category.getName() == null) {
+        if(category == null) {
             return new ErrorDataResult<>("Not found!");
         } else {
             return new SuccessDataResult<>(category);
