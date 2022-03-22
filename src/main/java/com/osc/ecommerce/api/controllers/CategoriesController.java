@@ -8,6 +8,7 @@ import com.osc.ecommerce.entities.dtos.CategoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
@@ -19,7 +20,7 @@ public class CategoriesController {
     private final CategoryService categoryService;
 
     @PostMapping("/save")
-    public Result save(@RequestBody CategoryDto categoryDto) {
+    public Result save(@RequestBody @Valid CategoryDto categoryDto) {
         return this.categoryService.save(categoryDto);
     }
 

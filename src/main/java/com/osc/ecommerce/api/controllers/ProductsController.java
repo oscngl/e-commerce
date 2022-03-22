@@ -8,6 +8,7 @@ import com.osc.ecommerce.entities.dtos.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
@@ -19,7 +20,7 @@ public class ProductsController {
     private final ProductService productService;
 
     @PostMapping("/save")
-    public Result save(@RequestBody ProductDto productDto) {
+    public Result save(@RequestBody @Valid ProductDto productDto) {
         return this.productService.save(productDto);
     }
 

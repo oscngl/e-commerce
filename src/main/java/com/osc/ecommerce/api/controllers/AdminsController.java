@@ -8,6 +8,7 @@ import com.osc.ecommerce.entities.dtos.AdminDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
@@ -19,7 +20,7 @@ public class AdminsController {
     private final AdminService adminService;
 
     @PostMapping("/save")
-    public Result save(@RequestBody AdminDto adminDto) {
+    public Result save(@RequestBody @Valid AdminDto adminDto) {
         return this.adminService.save(adminDto);
     }
 
