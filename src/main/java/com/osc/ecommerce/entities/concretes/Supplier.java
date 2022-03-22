@@ -1,5 +1,6 @@
 package com.osc.ecommerce.entities.concretes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class Supplier extends User {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "supplier")
+    @JsonIgnore
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.EAGER)
     private List<Product> products;
 
 }
