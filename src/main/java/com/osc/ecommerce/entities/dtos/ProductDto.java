@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -22,18 +23,15 @@ public class ProductDto {
     @NotBlank(message = "Description is required!")
     private String description;
 
-    @NotEmpty(message = "Price is required!")
-    @NotBlank(message = "Price is required!")
+    @NotNull(message = "Price is required!")
     private int price;
 
     private String photoUrl;
 
-    @NotEmpty(message = "Category is required!")
-    @NotBlank(message = "Category is required!")
+    @NotNull(message = "Category is required!")
     private Category category;
 
-    @NotEmpty(message = "Supplier is required!")
-    @NotBlank(message = "Supplier is required!")
+    @NotNull(message = "Supplier is required!")
     private Supplier supplier;
 
 }

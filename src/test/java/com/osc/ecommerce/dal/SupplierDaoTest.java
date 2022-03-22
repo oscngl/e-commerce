@@ -1,6 +1,5 @@
 package com.osc.ecommerce.dal;
 
-import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
