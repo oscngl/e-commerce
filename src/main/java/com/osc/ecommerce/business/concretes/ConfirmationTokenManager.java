@@ -7,6 +7,8 @@ import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ConfirmationTokenManager implements ConfirmationTokenService {
@@ -27,6 +29,14 @@ public class ConfirmationTokenManager implements ConfirmationTokenService {
         } else {
             return new SuccessDataResult<>(confirmationToken);
         }
+    }
+
+    @Override
+    public Result setConfirmedAt(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenDao.findByToken(token);
+        confirmationToken.setConfirmedAt(LocalDateTime.now());
+        confirmationTokenDao.save(confirmationToken);
+        return new SuccessResult("Token confirmed.");
     }
 
 }

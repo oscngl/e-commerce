@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "users")
-public abstract class User {
+public abstract class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,8 @@ public abstract class User {
 
     @Column(name = "confirmed")
     private boolean confirmed = false;
+
+    private String role;
 
     @OneToMany(mappedBy = "user")
     private List<ConfirmationToken> tokens;

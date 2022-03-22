@@ -1,12 +1,15 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.AdminService;
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.AdminDao;
 import com.osc.ecommerce.entities.concretes.Admin;
+import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.dtos.AdminDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,16 +20,22 @@ public class AdminManager implements AdminService {
 
     private final AdminDao adminDao;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Override
-    public Result save(AdminDto adminDto) {
+    public DataResult<String> save(AdminDto adminDto) {
         Admin exists = adminDao.findByConfirmedIsTrueAndEmail(adminDto.getEmail());
         if(exists != null) {
-            return new ErrorResult("Email already taken!");
+            return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Admin admin = modelMapper.map(adminDto, Admin.class);
+            String encodedPassword = bCryptPasswordEncoder.encode(admin.getPassword());
+            admin.setPassword(encodedPassword);
             adminDao.save(admin);
-            return new SuccessResult("Admin saved.");
+            ConfirmationToken confirmationToken = new ConfirmationToken(admin);
+            confirmationTokenService.save(confirmationToken);
+            return new SuccessDataResult<>(confirmationToken.getToken(), "Admin saved.");
         }
     }
 

@@ -8,5 +8,5 @@ public interface ConfirmationTokenService {
 
     Result save(ConfirmationToken confirmationToken);
     DataResult<ConfirmationToken> getByToken(String token);
-
+    Result setConfirmedAt(String token);
 }

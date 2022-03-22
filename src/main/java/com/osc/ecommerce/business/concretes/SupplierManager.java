@@ -1,12 +1,15 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.business.abstracts.SupplierService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.SupplierDao;
+import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.concretes.Supplier;
 import com.osc.ecommerce.entities.dtos.SupplierDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,16 +20,22 @@ public class SupplierManager implements SupplierService {
 
     private final SupplierDao supplierDao;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Override
-    public Result save(SupplierDto supplierDto) {
+    public DataResult<String> save(SupplierDto supplierDto) {
         Supplier exists = supplierDao.findByConfirmedIsTrueAndEmail(supplierDto.getEmail());
         if(exists != null) {
-            return new ErrorResult("Email already taken!");
+            return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
+            String encodedPassword = bCryptPasswordEncoder.encode(supplier.getPassword());
+            supplier.setPassword(encodedPassword);
             supplierDao.save(supplier);
-            return new SuccessResult("Supplier saved.");
+            ConfirmationToken confirmationToken = new ConfirmationToken(supplier);
+            confirmationTokenService.save(confirmationToken);
+            return new SuccessDataResult<>(confirmationToken.getToken(), "Supplier saved.");
         }
     }
 
