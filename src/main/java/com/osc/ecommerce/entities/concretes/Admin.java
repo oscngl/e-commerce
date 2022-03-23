@@ -1,5 +1,6 @@
 package com.osc.ecommerce.entities.concretes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Admin extends User {
 
     private String role = "ROLE_ADMIN";
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);

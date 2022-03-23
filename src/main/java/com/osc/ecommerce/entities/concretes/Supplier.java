@@ -34,15 +34,11 @@ public class Supplier extends User {
     @OneToMany(mappedBy = "supplier", fetch = FetchType.EAGER)
     private List<Product> products;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
         return Collections.singletonList(authority);
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
     }
 
     @Override
@@ -67,7 +63,7 @@ public class Supplier extends User {
 
     @Override
     public boolean isEnabled() {
-        return this.isConfirmed();
+        return super.isConfirmed();
     }
 
 }
