@@ -1,7 +1,9 @@
 package com.osc.ecommerce.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.osc.ecommerce.dal.ConfirmationTokenDao;
 import com.osc.ecommerce.dal.SupplierDao;
+import com.osc.ecommerce.dal.UserDao;
 import com.osc.ecommerce.entities.concretes.Supplier;
 import com.osc.ecommerce.entities.dtos.SupplierDto;
 import org.junit.jupiter.api.AfterEach;
@@ -27,11 +29,19 @@ class SuppliersControllerIT {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private SupplierDao supplierDao;
+
+    @Autowired
+    private ConfirmationTokenDao confirmationTokenDao;
 
     @AfterEach
     void tearDown() {
+        confirmationTokenDao.deleteAll();
         supplierDao.deleteAll();
+        userDao.deleteAll();
     }
 
     @Test

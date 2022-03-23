@@ -28,12 +28,9 @@ class CategoryManagerTest {
     @Mock
     private CategoryDao categoryDao;
 
-    @Mock
-    private ModelMapper modelMapper;
-
     @BeforeEach
     void setUp() {
-        categoryManager = new CategoryManager(categoryDao, modelMapper);
+        categoryManager = new CategoryManager(categoryDao, new ModelMapper());
     }
 
     @Test
@@ -48,8 +45,7 @@ class CategoryManagerTest {
         ArgumentCaptor<Category> categoryArgumentCaptor = ArgumentCaptor.forClass(Category.class);
         verify(categoryDao).save(categoryArgumentCaptor.capture());
         Category capturedCategory = categoryArgumentCaptor.getValue();
-        CategoryDto capturedCategoryDto = modelMapper.map(capturedCategory, CategoryDto.class);
-        assertThat(capturedCategory).isEqualTo(capturedCategoryDto);
+        assertThat(capturedCategory.getName()).isEqualTo(categoryDto.getName());
 
     }
 

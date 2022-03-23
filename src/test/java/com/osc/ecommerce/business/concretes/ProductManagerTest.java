@@ -27,12 +27,9 @@ class ProductManagerTest {
     @Mock
     private ProductDao productDao;
 
-    @Mock
-    private ModelMapper modelMapper;
-
     @BeforeEach
     void setUp() {
-        productManager = new ProductManager(productDao, modelMapper);
+        productManager = new ProductManager(productDao, new ModelMapper());
     }
 
     @Test
@@ -52,8 +49,10 @@ class ProductManagerTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productDao).save(productArgumentCaptor.capture());
         Product capturedProduct = productArgumentCaptor.getValue();
-        ProductDto capturedProductDto = modelMapper.map(capturedProduct, ProductDto.class);
-        assertThat(capturedProduct).isEqualTo(capturedProductDto);
+        assertThat(capturedProduct.getName()).isEqualTo(productDto.getName());
+        assertThat(capturedProduct.getDescription()).isEqualTo(productDto.getDescription());
+        assertThat(capturedProduct.getPrice()).isEqualTo(productDto.getPrice());
+        assertThat(capturedProduct.getPhotoUrl()).isEqualTo(productDto.getPhotoUrl());
 
     }
 

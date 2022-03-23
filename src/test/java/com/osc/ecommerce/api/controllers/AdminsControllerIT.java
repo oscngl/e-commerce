@@ -2,6 +2,8 @@ package com.osc.ecommerce.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.dal.AdminDao;
+import com.osc.ecommerce.dal.ConfirmationTokenDao;
+import com.osc.ecommerce.dal.UserDao;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.dtos.AdminDto;
 import org.junit.jupiter.api.AfterEach;
@@ -27,11 +29,19 @@ class AdminsControllerIT {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private AdminDao adminDao;
+
+    @Autowired
+    private ConfirmationTokenDao confirmationTokenDao;
 
     @AfterEach
     void tearDown() {
+        confirmationTokenDao.deleteAll();
         adminDao.deleteAll();
+        userDao.deleteAll();
     }
 
     @Test

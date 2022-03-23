@@ -1,5 +1,6 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.AdminDao;
 import com.osc.ecommerce.entities.concretes.Admin;
@@ -11,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -26,11 +28,11 @@ class AdminManagerTest {
     private AdminDao adminDao;
 
     @Mock
-    private ModelMapper modelMapper;
+    private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        adminManager = new AdminManager(adminDao, modelMapper);
+        adminManager = new AdminManager(adminDao, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test
@@ -43,13 +45,16 @@ class AdminManagerTest {
                 "12345678"
         );
 
-        adminManager.save(adminDto);
+        DataResult<String> result = adminManager.save(adminDto);
 
         ArgumentCaptor<Admin> adminArgumentCaptor = ArgumentCaptor.forClass(Admin.class);
         verify(adminDao).save(adminArgumentCaptor.capture());
         Admin capturedAdmin = adminArgumentCaptor.getValue();
-        AdminDto capturedAdminDto = modelMapper.map(capturedAdmin, AdminDto.class);
-        assertThat(capturedAdmin).isEqualTo(capturedAdminDto);
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getMessage()).isEqualTo("Admin saved.");
+        assertThat(capturedAdmin.getFirstName()).isEqualTo(adminDto.getFirstName());
+        assertThat(capturedAdmin.getLastName()).isEqualTo(adminDto.getLastName());
+        assertThat(capturedAdmin.getEmail()).isEqualTo(adminDto.getEmail());
 
     }
 
@@ -59,7 +64,10 @@ class AdminManagerTest {
         int id = 1;
         String firstName = "firstName";
         String lastName = "lastName";
-        Admin admin = new Admin(id, firstName, lastName);
+        Admin admin = new Admin();
+        admin.setId(id);
+        admin.setFirstName(firstName);
+        admin.setLastName(lastName);
 
         when(adminDao.findById(id)).thenReturn(Optional.of(admin));
 
@@ -88,7 +96,10 @@ class AdminManagerTest {
         String firstName = "firstName";
         String lastName = "lastName";
         String email = "email@gmail.com";
-        Admin admin = new Admin(id, firstName, lastName);
+        Admin admin = new Admin();
+        admin.setId(id);
+        admin.setFirstName(firstName);
+        admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setConfirmed(true);
 

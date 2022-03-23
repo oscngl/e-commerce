@@ -1,5 +1,6 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.CustomerDao;
 import com.osc.ecommerce.entities.concretes.Customer;
@@ -11,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -27,11 +29,11 @@ class CustomerManagerTest {
     private CustomerDao customerDao;
 
     @Mock
-    private ModelMapper modelMapper;
+    private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        customerManager = new CustomerManager(customerDao, modelMapper);
+        customerManager = new CustomerManager(customerDao, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test
@@ -44,13 +46,16 @@ class CustomerManagerTest {
                 "12345678"
         );
 
-        customerManager.save(customerDto);
+        DataResult<String> result = customerManager.save(customerDto);
 
         ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
         verify(customerDao).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
-        CustomerDto capturedCustomerDto = modelMapper.map(capturedCustomer, CustomerDto.class);
-        assertThat(capturedCustomer).isEqualTo(capturedCustomerDto);
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getMessage()).isEqualTo("Customer saved.");
+        assertThat(capturedCustomer.getFirstName()).isEqualTo(customerDto.getFirstName());
+        assertThat(capturedCustomer.getLastName()).isEqualTo(customerDto.getLastName());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(customerDto.getEmail());
 
     }
 
@@ -60,7 +65,10 @@ class CustomerManagerTest {
         int id = 1;
         String firstName = "firstName";
         String lastName = "lastName";
-        Customer customer = new Customer(id, firstName, lastName);
+        Customer customer = new Customer();
+        customer.setId(id);
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
 
         when(customerDao.findById(id)).thenReturn(Optional.of(customer));
 
@@ -89,7 +97,10 @@ class CustomerManagerTest {
         String firstName = "firstName";
         String lastName = "lastName";
         String email = "email@gmail.com";
-        Customer customer = new Customer(id, firstName, lastName);
+        Customer customer = new Customer();
+        customer.setId(id);
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
         customer.setEmail(email);
         customer.setConfirmed(true);
 

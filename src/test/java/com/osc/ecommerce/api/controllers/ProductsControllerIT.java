@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.dal.CategoryDao;
 import com.osc.ecommerce.dal.ProductDao;
 import com.osc.ecommerce.dal.SupplierDao;
+import com.osc.ecommerce.dal.UserDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.concretes.Supplier;
@@ -34,6 +35,9 @@ class ProductsControllerIT {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private ProductDao productDao;
 
     @Autowired
@@ -47,6 +51,7 @@ class ProductsControllerIT {
         productDao.deleteAll();
         categoryDao.deleteAll();
         supplierDao.deleteAll();
+        userDao.deleteAll();
     }
 
     @Test

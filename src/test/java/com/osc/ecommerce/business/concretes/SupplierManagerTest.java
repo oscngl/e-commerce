@@ -1,5 +1,6 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.SupplierDao;
 import com.osc.ecommerce.entities.concretes.Product;
@@ -12,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +31,11 @@ class SupplierManagerTest {
     private SupplierDao supplierDao;
 
     @Mock
-    private ModelMapper modelMapper;
+    private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        supplierManager = new SupplierManager(supplierDao, modelMapper);
+        supplierManager = new SupplierManager(supplierDao, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test
@@ -42,16 +44,18 @@ class SupplierManagerTest {
         SupplierDto supplierDto = new SupplierDto(
                 "name",
                 "email@gmail.com",
-                "12345678"
+                "password"
         );
 
-        supplierManager.save(supplierDto);
+        DataResult<String> result = supplierManager.save(supplierDto);
 
         ArgumentCaptor<Supplier> supplierArgumentCaptor = ArgumentCaptor.forClass(Supplier.class);
         verify(supplierDao).save(supplierArgumentCaptor.capture());
         Supplier capturedSupplier = supplierArgumentCaptor.getValue();
-        SupplierDto capturedSupplierDto = modelMapper.map(capturedSupplier, SupplierDto.class);
-        assertThat(capturedSupplier).isEqualTo(capturedSupplierDto);
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getMessage()).isEqualTo("Supplier saved.");
+        assertThat(capturedSupplier.getName()).isEqualTo(supplierDto.getName());
+        assertThat(capturedSupplier.getEmail()).isEqualTo(supplierDto.getEmail());
 
     }
 
@@ -61,7 +65,10 @@ class SupplierManagerTest {
         int id = 1;
         String name = "name";
         List<Product> productList = new ArrayList<>();
-        Supplier supplier = new Supplier(id, name, productList);
+        Supplier supplier = new Supplier();
+        supplier.setId(1);
+        supplier.setName(name);
+        supplier.setProducts(productList);
 
         when(supplierDao.findById(id)).thenReturn(Optional.of(supplier));
 
@@ -90,7 +97,10 @@ class SupplierManagerTest {
         String name = "name";
         String email = "email@gmail.com";
         List<Product> productList = new ArrayList<>();
-        Supplier supplier = new Supplier(id, name, productList);
+        Supplier supplier = new Supplier();
+        supplier.setId(1);
+        supplier.setName(name);
+        supplier.setProducts(productList);
         supplier.setEmail(email);
         supplier.setConfirmed(true);
 
