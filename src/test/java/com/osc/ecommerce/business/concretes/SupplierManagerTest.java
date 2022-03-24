@@ -1,17 +1,19 @@
 package com.osc.ecommerce.business.concretes;
 
-import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
-import com.osc.ecommerce.business.abstracts.RoleService;
-import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
+import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
+import com.osc.ecommerce.dal.abstracts.RoleDao;
 import com.osc.ecommerce.dal.abstracts.SupplierDao;
+import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Product;
+import com.osc.ecommerce.entities.concretes.Role;
 import com.osc.ecommerce.entities.concretes.Supplier;
 import com.osc.ecommerce.entities.dtos.SupplierDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -33,21 +35,34 @@ class SupplierManagerTest {
     private SupplierDao supplierDao;
 
     @Mock
-    private UserService userService;
+    private UserDao userDao;
+
+    @InjectMocks
+    private UserManager userManager;
 
     @Mock
-    private RoleService roleService;
+    private RoleDao roleDao;
+
+    @InjectMocks
+    private RoleManager roleManager;
 
     @Mock
-    private ConfirmationTokenService confirmationTokenService;
+    private ConfirmationTokenDao confirmationTokenDao;
+
+    @InjectMocks
+    private ConfirmationTokenManager confirmationTokenManager;
 
     @BeforeEach
     void setUp() {
-        supplierManager = new SupplierManager(supplierDao, userService, roleService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
+        supplierManager = new SupplierManager(supplierDao, userManager, roleManager, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenManager);
     }
 
     @Test
     void canSave() {
+
+        Role role = new Role();
+        role.setName("ROLE_SUPPLIER");
+        roleDao.save(role);
 
         SupplierDto supplierDto = new SupplierDto(
                 "name",

@@ -1,16 +1,18 @@
 package com.osc.ecommerce.business.concretes;
 
-import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
-import com.osc.ecommerce.business.abstracts.RoleService;
-import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
+import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
 import com.osc.ecommerce.dal.abstracts.CustomerDao;
+import com.osc.ecommerce.dal.abstracts.RoleDao;
+import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Customer;
+import com.osc.ecommerce.entities.concretes.Role;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -31,21 +33,34 @@ class CustomerManagerTest {
     private CustomerDao customerDao;
 
     @Mock
-    private UserService userService;
+    private UserDao userDao;
+
+    @InjectMocks
+    private UserManager userManager;
 
     @Mock
-    private RoleService roleService;
+    private RoleDao roleDao;
+
+    @InjectMocks
+    private RoleManager roleManager;
 
     @Mock
-    private ConfirmationTokenService confirmationTokenService;
+    private ConfirmationTokenDao confirmationTokenDao;
+
+    @InjectMocks
+    private ConfirmationTokenManager confirmationTokenManager;
 
     @BeforeEach
     void setUp() {
-        customerManager = new CustomerManager(customerDao, userService, roleService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
+        customerManager = new CustomerManager(customerDao, userManager, roleManager, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenManager);
     }
 
     @Test
     void canSave() {
+
+        Role role = new Role();
+        role.setName("ROLE_CUSTOMER");
+        roleDao.save(role);
 
         CustomerDto customerDto = new CustomerDto(
                 "firstName",

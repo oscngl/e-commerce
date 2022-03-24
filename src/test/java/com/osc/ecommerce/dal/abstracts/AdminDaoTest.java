@@ -1,7 +1,6 @@
-package com.osc.ecommerce.dal;
+package com.osc.ecommerce.dal.abstracts;
 
-import com.osc.ecommerce.dal.abstracts.SupplierDao;
-import com.osc.ecommerce.entities.concretes.Supplier;
+import com.osc.ecommerce.entities.concretes.Admin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,30 +16,31 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class SupplierDaoTest {
+class AdminDaoTest {
 
     @Autowired
-    private SupplierDao supplierDao;
+    private AdminDao adminDao;
 
     @AfterEach
     void tearDown() {
-        supplierDao.deleteAll();
+        adminDao.deleteAll();
     }
 
     @Test
     void itShouldCheckWhenConfirmedIsTrueAndEmailExists() {
 
         String email = "oscngl@gmail.com";
-        Supplier supplier = new Supplier();
-        supplier.setConfirmed(true);
-        supplier.setEmail(email);
-        supplier.setPassword("password");
-        supplier.setName("name");
-        supplierDao.save(supplier);
+        Admin admin = new Admin();
+        admin.setConfirmed(true);
+        admin.setEmail(email);
+        admin.setPassword("password");
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
+        adminDao.save(admin);
 
-        Supplier expected = supplierDao.findByConfirmedIsTrueAndEmail(email);
+        Admin expected = adminDao.findByConfirmedIsTrueAndEmail(email);
 
-        assertThat(expected).isEqualTo(supplier);
+        assertThat(expected).isEqualTo(admin);
 
     }
 
@@ -48,13 +48,14 @@ class SupplierDaoTest {
     void itShouldCheckWhenConfirmedIsNotTrueAndEmailExists() {
 
         String email = "oscngl@gmail.com";
-        Supplier supplier = new Supplier();
-        supplier.setEmail(email);
-        supplier.setPassword("password");
-        supplier.setName("name");
-        supplierDao.save(supplier);
+        Admin admin = new Admin();
+        admin.setEmail(email);
+        admin.setPassword("password");
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
+        adminDao.save(admin);
 
-        Supplier expected = supplierDao.findByConfirmedIsTrueAndEmail(email);
+        Admin expected = adminDao.findByConfirmedIsTrueAndEmail(email);
 
         assertThat(expected).isNull();
 
@@ -65,7 +66,7 @@ class SupplierDaoTest {
 
         String email = "oscngl@gmail.com";
 
-        Supplier expected = supplierDao.findByConfirmedIsTrueAndEmail(email);
+        Admin expected = adminDao.findByConfirmedIsTrueAndEmail(email);
 
         assertThat(expected).isNull();
 
@@ -74,14 +75,15 @@ class SupplierDaoTest {
     @Test
     void itShouldCheckWhenConfirmedExists() {
 
-        Supplier supplier = new Supplier();
-        supplier.setConfirmed(true);
-        supplier.setEmail("email");
-        supplier.setPassword("password");
-        supplier.setName("name");
-        supplierDao.save(supplier);
+        Admin admin = new Admin();
+        admin.setConfirmed(true);
+        admin.setEmail("email");
+        admin.setPassword("password");
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
+        adminDao.save(admin);
 
-        List<Supplier> expected = supplierDao.findAllByConfirmedIsTrue();
+        List<Admin> expected = adminDao.findAllByConfirmedIsTrue();
 
         assertThat(expected.isEmpty()).isFalse();
 
@@ -90,7 +92,7 @@ class SupplierDaoTest {
     @Test
     void itShouldCheckWhenConfirmedDoesNotExists() {
 
-        List<Supplier> expected = supplierDao.findAllByConfirmedIsTrue();
+        List<Admin> expected = adminDao.findAllByConfirmedIsTrue();
 
         assertThat(expected.isEmpty()).isTrue();
 

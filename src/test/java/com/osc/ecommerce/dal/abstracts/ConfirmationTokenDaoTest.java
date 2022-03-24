@@ -1,7 +1,5 @@
-package com.osc.ecommerce.dal;
+package com.osc.ecommerce.dal.abstracts;
 
-import com.osc.ecommerce.dal.abstracts.AdminDao;
-import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import org.junit.jupiter.api.AfterEach;

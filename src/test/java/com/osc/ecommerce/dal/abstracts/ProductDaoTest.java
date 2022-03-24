@@ -1,8 +1,5 @@
-package com.osc.ecommerce.dal;
+package com.osc.ecommerce.dal.abstracts;
 
-import com.osc.ecommerce.dal.abstracts.CategoryDao;
-import com.osc.ecommerce.dal.abstracts.ProductDao;
-import com.osc.ecommerce.dal.abstracts.SupplierDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.concretes.Supplier;
