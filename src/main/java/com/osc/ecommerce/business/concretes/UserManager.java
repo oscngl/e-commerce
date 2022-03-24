@@ -5,10 +5,14 @@ import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +54,13 @@ public class UserManager implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userDao.findByEmail(email);
+        User user = userDao.findByConfirmedIsTrueAndEmail(email);
+        if(user == null) {
+            throw new UsernameNotFoundException("User not found in the database!");
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
 }
