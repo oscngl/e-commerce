@@ -31,7 +31,7 @@ public class SupplierManager implements SupplierService {
     @Override
     public DataResult<String> save(SupplierDto supplierDto) {
         DataResult<User> exists = userService.getByConfirmedEmail(supplierDto.getEmail());
-        if(exists.isSuccess() && exists.getData() != null) {
+        if(exists != null && exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);

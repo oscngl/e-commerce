@@ -31,7 +31,7 @@ public class AdminManager implements AdminService {
     @Override
     public DataResult<String> save(AdminDto adminDto) {
         DataResult<User> exists = userService.getByConfirmedEmail(adminDto.getEmail());
-        if(exists.isSuccess() && exists.getData() != null) {
+        if(exists != null && exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Admin admin = modelMapper.map(adminDto, Admin.class);

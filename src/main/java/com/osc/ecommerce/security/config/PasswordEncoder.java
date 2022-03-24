@@ -1,4 +1,4 @@
-package com.osc.ecommerce.security;
+package com.osc.ecommerce.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

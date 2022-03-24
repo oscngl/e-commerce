@@ -1,4 +1,4 @@
-package com.osc.ecommerce.security;
+package com.osc.ecommerce.security.entrypoint.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.core.utilities.results.ErrorResult;
@@ -17,7 +17,8 @@ public class AuthenticationFailureEntryPoint implements AuthenticationEntryPoint
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(new ErrorResult("Incorrect email or password!")));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(new ErrorResult("UNAUTHORIZED!")));
     }
 
 }
