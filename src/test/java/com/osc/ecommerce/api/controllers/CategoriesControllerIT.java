@@ -1,5 +1,7 @@
 package com.osc.ecommerce.api.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.entities.concretes.Category;
@@ -29,6 +31,8 @@ class CategoriesControllerIT {
     @Autowired
     private CategoryDao categoryDao;
 
+    private final String token = "Bearer " + JWT.create().withArrayClaim("roles", new String[]{"ROLE_ADMIN"}).withIssuer("auth0").sign(Algorithm.HMAC256("secret"));
+
     @AfterEach
     void tearDown() {
         categoryDao.deleteAll();
@@ -43,7 +47,8 @@ class CategoriesControllerIT {
 
         mockMvc.perform(post("/api/categories/save")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryDto)))
+                        .content(objectMapper.writeValueAsString(categoryDto))
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -53,7 +58,8 @@ class CategoriesControllerIT {
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
         mockMvc.perform(post("/api/categories/save")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
     }

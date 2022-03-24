@@ -1,5 +1,7 @@
 package com.osc.ecommerce.api.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.dal.abstracts.AdminDao;
 import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
@@ -37,6 +39,8 @@ class AdminsControllerIT {
     @Autowired
     private ConfirmationTokenDao confirmationTokenDao;
 
+    private final String token = "Bearer " + JWT.create().withArrayClaim("roles", new String[]{"ROLE_ADMIN"}).withIssuer("auth0").sign(Algorithm.HMAC256("secret"));
+
     @AfterEach
     void tearDown() {
         confirmationTokenDao.deleteAll();
@@ -56,7 +60,8 @@ class AdminsControllerIT {
 
         mockMvc.perform(post("/api/admins/save")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(adminDto)))
+                        .content(objectMapper.writeValueAsString(adminDto))
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -66,7 +71,8 @@ class AdminsControllerIT {
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
         mockMvc.perform(post("/api/admins/save")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
     }
@@ -89,7 +95,8 @@ class AdminsControllerIT {
 
         mockMvc.perform(get("/api/admins/getById")
                         .param("id", String.valueOf(id))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -100,7 +107,8 @@ class AdminsControllerIT {
 
         mockMvc.perform(get("/api/admins/getById")
                         .param("id", String.valueOf(1))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(false));
 
@@ -110,7 +118,8 @@ class AdminsControllerIT {
     void itShouldGetAll_isOk() throws Exception {
 
         mockMvc.perform(get("/api/admins/getAll")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -132,7 +141,8 @@ class AdminsControllerIT {
 
         mockMvc.perform(get("/api/admins/getByEmail")
                         .param("email", email)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -143,7 +153,8 @@ class AdminsControllerIT {
 
         mockMvc.perform(get("/api/admins/getByEmail")
                         .param("email", "email@gmail.com")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(false));
 
@@ -153,7 +164,8 @@ class AdminsControllerIT {
     void itShouldNotGetByEmailWhenRequestIsNotValid_isOk() throws Exception {
 
         mockMvc.perform(get("/api/admins/getByEmail")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(false));
 

@@ -1,5 +1,7 @@
 package com.osc.ecommerce.api.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.dal.abstracts.ProductDao;
@@ -46,6 +48,8 @@ class ProductsControllerIT {
     @Autowired
     private SupplierDao supplierDao;
 
+    private final String token = "Bearer " + JWT.create().withArrayClaim("roles", new String[]{"ROLE_SUPPLIER"}).withIssuer("auth0").sign(Algorithm.HMAC256("secret"));
+
     @AfterEach
     void tearDown() {
         productDao.deleteAll();
@@ -78,7 +82,8 @@ class ProductsControllerIT {
 
         mockMvc.perform(post("/api/products/save")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productDto)))
+                        .content(objectMapper.writeValueAsString(productDto))
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -88,7 +93,8 @@ class ProductsControllerIT {
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
         mockMvc.perform(post("/api/products/save")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
     }
@@ -123,7 +129,8 @@ class ProductsControllerIT {
 
         mockMvc.perform(put("/api/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(product)))
+                        .content(objectMapper.writeValueAsString(product))
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
@@ -152,7 +159,8 @@ class ProductsControllerIT {
 
         mockMvc.perform(put("/api/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(product)))
+                        .content(objectMapper.writeValueAsString(product))
+                        .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(false));
 
@@ -162,7 +170,8 @@ class ProductsControllerIT {
     void itShouldNotUpdateWhenRequestIsNotValid_isBadRequest() throws Exception {
 
         mockMvc.perform(put("/api/products/update")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
     }
