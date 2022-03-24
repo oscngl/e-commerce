@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.abstracts.AdminDao;
 import com.osc.ecommerce.entities.concretes.Admin;
@@ -28,11 +29,14 @@ class AdminManagerTest {
     private AdminDao adminDao;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        adminManager = new AdminManager(adminDao, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
+        adminManager = new AdminManager(adminDao, userService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test

@@ -31,8 +31,6 @@ public abstract class User implements UserDetails {
     @Column(name = "confirmed")
     private boolean confirmed = false;
 
-    private String role;
-
     @OneToMany(mappedBy = "user")
     private List<ConfirmationToken> tokens;
 

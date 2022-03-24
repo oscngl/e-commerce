@@ -2,8 +2,10 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.AdminService;
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.AdminDao;
+import com.osc.ecommerce.entities.abstracts.User;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.dtos.AdminDto;
@@ -19,14 +21,15 @@ import java.util.List;
 public class AdminManager implements AdminService {
 
     private final AdminDao adminDao;
+    private final UserService userService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
     @Override
     public DataResult<String> save(AdminDto adminDto) {
-        Admin exists = adminDao.findByConfirmedIsTrueAndEmail(adminDto.getEmail());
-        if(exists != null) {
+        DataResult<User> exists = userService.getByConfirmedEmail(adminDto.getEmail());
+        if(exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Admin admin = modelMapper.map(adminDto, Admin.class);

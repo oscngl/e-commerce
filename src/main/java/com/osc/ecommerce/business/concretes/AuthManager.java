@@ -2,6 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.*;
 import com.osc.ecommerce.core.utilities.results.*;
+import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.dtos.AdminDto;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
@@ -24,32 +25,47 @@ public class AuthManager implements AuthService {
 
     @Override
     public DataResult<String> registerAdmin(AdminDto adminDto) {
-        String token = adminService.save(adminDto).getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-        emailSenderService.send(adminDto.getEmail(), buildEmail(adminDto.getFirstName(), link));
-        return new SuccessDataResult<>(token, "Admin registered.");
+        DataResult<String> result = adminService.save(adminDto);
+        if (!result.isSuccess()) {
+            return new ErrorDataResult<>(null, "Email already taken!");
+        } else {
+            String token = result.getData();
+            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+            emailSenderService.send(adminDto.getEmail(), buildEmail(adminDto.getFirstName(), link));
+            return new SuccessDataResult<>(token, "Admin registered.");
+        }
     }
 
     @Override
     public DataResult<String> registerCustomer(CustomerDto customerDto) {
-        String token = customerService.save(customerDto).getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-        emailSenderService.send(customerDto.getEmail(), buildEmail(customerDto.getFirstName(), link));
-        return new SuccessDataResult<>(token, "Customer registered.");
+        DataResult<String> result = customerService.save(customerDto);
+        if (!result.isSuccess()) {
+            return new ErrorDataResult<>(null, "Email already taken!");
+        } else {
+            String token = result.getData();
+            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+            emailSenderService.send(customerDto.getEmail(), buildEmail(customerDto.getFirstName(), link));
+            return new SuccessDataResult<>(token, "Customer registered.");
+        }
     }
 
     @Override
     public DataResult<String> registerSupplier(SupplierDto supplierDto) {
-        String token = supplierService.save(supplierDto).getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-        emailSenderService.send(supplierDto.getEmail(), buildEmail(supplierDto.getName(), link));
-        return new SuccessDataResult<>(token, "Supplier registered.");
+        DataResult<String> result = supplierService.save(supplierDto);
+        if (!result.isSuccess()) {
+            return new ErrorDataResult<>(null, "Email already taken!");
+        } else {
+            String token = result.getData();
+            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+            emailSenderService.send(supplierDto.getEmail(), buildEmail(supplierDto.getName(), link));
+            return new SuccessDataResult<>(token, "Supplier registered.");
+        }
     }
 
     @Override
     public Result confirm(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService.getByToken(token).getData();
-        if(confirmationToken == null) {
+        if (confirmationToken == null) {
             return new ErrorResult("Token not found!");
         }
         if (confirmationToken.getConfirmedAt() != null) {

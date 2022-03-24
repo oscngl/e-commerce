@@ -1,20 +1,19 @@
 package com.osc.ecommerce.entities.concretes;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
@@ -30,23 +29,14 @@ public class Customer extends User {
     @Column(name = "last_name")
     private String lastName;
 
-    private String role = "ROLE_CUSTOMER";
-
-    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-        return Collections.singletonList(authority);
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return this.getEmail();
+        return super.getEmail();
     }
 
     @Override
@@ -66,7 +56,7 @@ public class Customer extends User {
 
     @Override
     public boolean isEnabled() {
-        return this.isConfirmed();
+        return super.isConfirmed();
     }
 
 }

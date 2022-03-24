@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.abstracts.SupplierDao;
 import com.osc.ecommerce.entities.concretes.Product;
@@ -31,11 +32,14 @@ class SupplierManagerTest {
     private SupplierDao supplierDao;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        supplierManager = new SupplierManager(supplierDao, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
+        supplierManager = new SupplierManager(supplierDao, userService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test

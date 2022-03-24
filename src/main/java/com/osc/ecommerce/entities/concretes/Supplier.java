@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "suppliers")
 public class Supplier extends User {
@@ -28,22 +28,18 @@ public class Supplier extends User {
     @Column(name = "name")
     private String name;
 
-    private String role = "ROLE_SUPPLIER";
-
     @JsonIgnore
     @OneToMany(mappedBy = "supplier", fetch = FetchType.EAGER)
     private List<Product> products;
 
-    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-        return Collections.singletonList(authority);
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return this.getEmail();
+        return super.getEmail();
     }
 
     @Override

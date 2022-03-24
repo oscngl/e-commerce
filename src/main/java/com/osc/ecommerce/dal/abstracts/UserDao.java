@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserDao extends JpaRepository<User, Integer> {
 
     User findByEmail(String email);
+    User findByConfirmedIsTrueAndEmail(String email);
     List<User> findAllByConfirmedIsTrue();
 
 }

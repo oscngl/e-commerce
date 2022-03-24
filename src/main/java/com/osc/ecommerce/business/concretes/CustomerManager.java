@@ -2,8 +2,10 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.business.abstracts.CustomerService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.CustomerDao;
+import com.osc.ecommerce.entities.abstracts.User;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.concretes.Customer;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
@@ -19,15 +21,16 @@ import java.util.List;
 public class CustomerManager implements CustomerService {
 
     private final CustomerDao customerDao;
+    private final UserService userService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
     @Override
     public DataResult<String> save(CustomerDto customerDto) {
-        Customer exists = customerDao.findByConfirmedIsTrueAndEmail(customerDto.getEmail());
-        if(exists != null) {
-            return new ErrorDataResult<>(null,"Email already taken!");
+        DataResult<User> exists = userService.getByConfirmedEmail(customerDto.getEmail());
+        if(exists.isSuccess() && exists.getData() != null) {
+            return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Customer customer = modelMapper.map(customerDto, Customer.class);
             String encodedPassword = bCryptPasswordEncoder.encode(customer.getPassword());

@@ -9,6 +9,8 @@ import com.osc.ecommerce.entities.dtos.SupplierDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
@@ -18,17 +20,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register/admin")
-    public DataResult<String> registerAdmin(@RequestBody AdminDto adminDto) {
+    public DataResult<String> registerAdmin(@RequestBody @Valid AdminDto adminDto) {
         return authService.registerAdmin(adminDto);
     }
 
     @PostMapping("/register/customer")
-    public DataResult<String> registerCustomer(@RequestBody CustomerDto customerDto) {
+    public DataResult<String> registerCustomer(@RequestBody @Valid CustomerDto customerDto) {
         return authService.registerCustomer(customerDto);
     }
 
     @PostMapping("/register/supplier")
-    public DataResult<String> registerSupplier(@RequestBody  SupplierDto supplierDto) {
+    public DataResult<String> registerSupplier(@RequestBody @Valid SupplierDto supplierDto) {
         return authService.registerSupplier(supplierDto);
     }
 

@@ -2,8 +2,10 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.business.abstracts.SupplierService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.SupplierDao;
+import com.osc.ecommerce.entities.abstracts.User;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.concretes.Supplier;
 import com.osc.ecommerce.entities.dtos.SupplierDto;
@@ -19,14 +21,15 @@ import java.util.List;
 public class SupplierManager implements SupplierService {
 
     private final SupplierDao supplierDao;
+    private final UserService userService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
     @Override
     public DataResult<String> save(SupplierDto supplierDto) {
-        Supplier exists = supplierDao.findByConfirmedIsTrueAndEmail(supplierDto.getEmail());
-        if(exists != null) {
+        DataResult<User> exists = userService.getByConfirmedEmail(supplierDto.getEmail());
+        if(exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
         } else {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
