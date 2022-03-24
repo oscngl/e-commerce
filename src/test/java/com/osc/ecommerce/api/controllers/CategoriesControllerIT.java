@@ -1,7 +1,7 @@
 package com.osc.ecommerce.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.osc.ecommerce.dal.CategoryDao;
+import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.dtos.CategoryDto;
 import org.junit.jupiter.api.AfterEach;

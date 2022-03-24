@@ -2,7 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
-import com.osc.ecommerce.dal.AdminDao;
+import com.osc.ecommerce.dal.abstracts.AdminDao;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.dtos.AdminDto;
 import org.junit.jupiter.api.BeforeEach;

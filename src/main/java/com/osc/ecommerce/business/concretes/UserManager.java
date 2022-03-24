@@ -4,7 +4,7 @@ import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.ErrorResult;
 import com.osc.ecommerce.core.utilities.results.Result;
 import com.osc.ecommerce.core.utilities.results.SuccessResult;
-import com.osc.ecommerce.dal.UserDao;
+import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

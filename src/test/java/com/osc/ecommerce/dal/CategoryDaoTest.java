@@ -1,5 +1,6 @@
 package com.osc.ecommerce.dal;
 
+import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

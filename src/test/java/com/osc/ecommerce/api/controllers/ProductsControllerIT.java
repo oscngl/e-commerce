@@ -1,10 +1,10 @@
 package com.osc.ecommerce.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.osc.ecommerce.dal.CategoryDao;
-import com.osc.ecommerce.dal.ProductDao;
-import com.osc.ecommerce.dal.SupplierDao;
-import com.osc.ecommerce.dal.UserDao;
+import com.osc.ecommerce.dal.abstracts.CategoryDao;
+import com.osc.ecommerce.dal.abstracts.ProductDao;
+import com.osc.ecommerce.dal.abstracts.SupplierDao;
+import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.concretes.Supplier;

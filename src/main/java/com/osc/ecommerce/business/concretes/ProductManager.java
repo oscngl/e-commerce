@@ -2,7 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ProductService;
 import com.osc.ecommerce.core.utilities.results.*;
-import com.osc.ecommerce.dal.ProductDao;
+import com.osc.ecommerce.dal.abstracts.ProductDao;
 import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.dtos.ProductDto;
 import lombok.RequiredArgsConstructor;

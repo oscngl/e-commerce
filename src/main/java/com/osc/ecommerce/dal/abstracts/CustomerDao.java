@@ -1,4 +1,4 @@
-package com.osc.ecommerce.dal;
+package com.osc.ecommerce.dal.abstracts;
 
 import com.osc.ecommerce.entities.concretes.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;

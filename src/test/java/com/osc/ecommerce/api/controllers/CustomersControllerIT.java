@@ -1,9 +1,9 @@
 package com.osc.ecommerce.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.osc.ecommerce.dal.ConfirmationTokenDao;
-import com.osc.ecommerce.dal.CustomerDao;
-import com.osc.ecommerce.dal.UserDao;
+import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
+import com.osc.ecommerce.dal.abstracts.CustomerDao;
+import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Customer;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
 import org.junit.jupiter.api.AfterEach;

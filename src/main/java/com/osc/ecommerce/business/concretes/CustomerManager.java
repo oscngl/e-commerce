@@ -3,7 +3,7 @@ package com.osc.ecommerce.business.concretes;
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.business.abstracts.CustomerService;
 import com.osc.ecommerce.core.utilities.results.*;
-import com.osc.ecommerce.dal.CustomerDao;
+import com.osc.ecommerce.dal.abstracts.CustomerDao;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.concretes.Customer;
 import com.osc.ecommerce.entities.dtos.CustomerDto;

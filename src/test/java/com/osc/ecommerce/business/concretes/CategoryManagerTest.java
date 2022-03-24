@@ -1,7 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.core.utilities.results.DataResult;
-import com.osc.ecommerce.dal.CategoryDao;
+import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.entities.concretes.Category;
 import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.dtos.CategoryDto;
