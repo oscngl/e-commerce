@@ -2,6 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
 import com.osc.ecommerce.business.abstracts.CustomerService;
+import com.osc.ecommerce.business.abstracts.RoleService;
 import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.CustomerDao;
@@ -22,6 +23,7 @@ public class CustomerManager implements CustomerService {
 
     private final CustomerDao customerDao;
     private final UserService userService;
+    private final RoleService roleService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
@@ -35,6 +37,7 @@ public class CustomerManager implements CustomerService {
             Customer customer = modelMapper.map(customerDto, Customer.class);
             String encodedPassword = bCryptPasswordEncoder.encode(customer.getPassword());
             customer.setPassword(encodedPassword);
+            customer.getRoles().add(roleService.getByName("CUSTOMER").getData());
             customerDao.save(customer);
             ConfirmationToken confirmationToken = new ConfirmationToken(customer);
             confirmationTokenService.save(confirmationToken);

@@ -2,6 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.AdminService;
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.RoleService;
 import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.dal.abstracts.AdminDao;
@@ -22,6 +23,7 @@ public class AdminManager implements AdminService {
 
     private final AdminDao adminDao;
     private final UserService userService;
+    private final RoleService roleService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
@@ -35,6 +37,7 @@ public class AdminManager implements AdminService {
             Admin admin = modelMapper.map(adminDto, Admin.class);
             String encodedPassword = bCryptPasswordEncoder.encode(admin.getPassword());
             admin.setPassword(encodedPassword);
+            admin.getRoles().add(roleService.getByName("ADMIN").getData());
             adminDao.save(admin);
             ConfirmationToken confirmationToken = new ConfirmationToken(admin);
             confirmationTokenService.save(confirmationToken);

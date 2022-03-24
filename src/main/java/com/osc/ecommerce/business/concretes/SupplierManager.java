@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.RoleService;
 import com.osc.ecommerce.business.abstracts.SupplierService;
 import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.*;
@@ -22,6 +23,7 @@ public class SupplierManager implements SupplierService {
 
     private final SupplierDao supplierDao;
     private final UserService userService;
+    private final RoleService roleService;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
@@ -35,6 +37,7 @@ public class SupplierManager implements SupplierService {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
             String encodedPassword = bCryptPasswordEncoder.encode(supplier.getPassword());
             supplier.setPassword(encodedPassword);
+            supplier.getRoles().add(roleService.getByName("SUPPLIER").getData());
             supplierDao.save(supplier);
             ConfirmationToken confirmationToken = new ConfirmationToken(supplier);
             confirmationTokenService.save(confirmationToken);

@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.RoleService;
 import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.abstracts.CustomerDao;
@@ -33,11 +34,14 @@ class CustomerManagerTest {
     private UserService userService;
 
     @Mock
+    private RoleService roleService;
+
+    @Mock
     private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        customerManager = new CustomerManager(customerDao, userService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
+        customerManager = new CustomerManager(customerDao, userService, roleService, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenService);
     }
 
     @Test
