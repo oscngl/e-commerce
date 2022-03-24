@@ -1,5 +1,6 @@
 package com.osc.ecommerce.entities.concretes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.osc.ecommerce.entities.abstracts.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,31 +31,37 @@ public class Admin extends User {
     @Column(name = "last_name")
     private String lastName;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return super.getEmail();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return super.isConfirmed();

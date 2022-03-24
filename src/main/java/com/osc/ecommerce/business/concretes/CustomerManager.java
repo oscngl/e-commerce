@@ -37,7 +37,7 @@ public class CustomerManager implements CustomerService {
             Customer customer = modelMapper.map(customerDto, Customer.class);
             String encodedPassword = bCryptPasswordEncoder.encode(customer.getPassword());
             customer.setPassword(encodedPassword);
-            customer.getRoles().add(roleService.getByName("CUSTOMER").getData());
+            customer.getRoles().add(roleService.getByName("ROLE_CUSTOMER").getData());
             customerDao.save(customer);
             ConfirmationToken confirmationToken = new ConfirmationToken(customer);
             confirmationTokenService.save(confirmationToken);

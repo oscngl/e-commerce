@@ -37,7 +37,7 @@ public class SupplierManager implements SupplierService {
             Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
             String encodedPassword = bCryptPasswordEncoder.encode(supplier.getPassword());
             supplier.setPassword(encodedPassword);
-            supplier.getRoles().add(roleService.getByName("SUPPLIER").getData());
+            supplier.getRoles().add(roleService.getByName("ROLE_SUPPLIER").getData());
             supplierDao.save(supplier);
             ConfirmationToken confirmationToken = new ConfirmationToken(supplier);
             confirmationTokenService.save(confirmationToken);

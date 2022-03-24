@@ -37,7 +37,7 @@ public class AdminManager implements AdminService {
             Admin admin = modelMapper.map(adminDto, Admin.class);
             String encodedPassword = bCryptPasswordEncoder.encode(admin.getPassword());
             admin.setPassword(encodedPassword);
-            admin.getRoles().add(roleService.getByName("ADMIN").getData());
+            admin.getRoles().add(roleService.getByName("ROLE_ADMIN").getData());
             adminDao.save(admin);
             ConfirmationToken confirmationToken = new ConfirmationToken(admin);
             confirmationTokenService.save(confirmationToken);

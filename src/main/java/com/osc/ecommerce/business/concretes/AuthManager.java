@@ -2,7 +2,7 @@ package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.*;
 import com.osc.ecommerce.core.utilities.results.*;
-import com.osc.ecommerce.entities.concretes.Admin;
+import com.osc.ecommerce.entities.abstracts.User;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
 import com.osc.ecommerce.entities.dtos.AdminDto;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
@@ -68,7 +68,8 @@ public class AuthManager implements AuthService {
         if (confirmationToken == null) {
             return new ErrorResult("Token not found!");
         }
-        if (confirmationToken.getConfirmedAt() != null) {
+        DataResult<User> user = userService.getByConfirmedEmail(confirmationToken.getUser().getEmail());
+        if (confirmationToken.getConfirmedAt() != null || user.getData() != null) {
             return new ErrorResult("Email already confirmed!");
         }
         if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
