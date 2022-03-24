@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationFailureEntryPoint failureEntryPoint;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,7 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .httpBasic()
-                .disable();
+                .disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(failureEntryPoint);
 
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
