@@ -1,6 +1,7 @@
-package com.osc.ecommerce.security;
+package com.osc.ecommerce.security.config;
 
 import com.osc.ecommerce.business.abstracts.UserService;
+import com.osc.ecommerce.security.entrypoint.fail.AuthenticationFailureEntryPoint;
 import com.osc.ecommerce.security.filter.CustomAuthenticationFilter;
 import com.osc.ecommerce.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
