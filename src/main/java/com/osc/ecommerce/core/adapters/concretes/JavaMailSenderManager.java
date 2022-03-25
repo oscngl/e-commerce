@@ -1,6 +1,6 @@
-package com.osc.ecommerce.business.concretes;
+package com.osc.ecommerce.core.adapters.concretes;
 
-import com.osc.ecommerce.business.abstracts.EmailSenderService;
+import com.osc.ecommerce.core.adapters.abstracts.EmailSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 @RequiredArgsConstructor
-public class EmailSenderManager implements EmailSenderService {
+public class JavaMailSenderManager implements EmailSenderService {
 
     private final JavaMailSender mailSender;
 

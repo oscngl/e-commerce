@@ -1,4 +1,4 @@
-package com.osc.ecommerce.business.abstracts;
+package com.osc.ecommerce.core.adapters.abstracts;
 
 public interface EmailSenderService {
 

@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.business.abstracts.*;
+import com.osc.ecommerce.core.adapters.abstracts.EmailSenderService;
 import com.osc.ecommerce.core.utilities.results.*;
 import com.osc.ecommerce.entities.abstracts.User;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
