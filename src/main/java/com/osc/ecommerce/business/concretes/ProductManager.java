@@ -28,22 +28,20 @@ public class ProductManager implements ProductService {
     @Override
     public Result update(Product product) {
         Product exists = productDao.findById(product.getId()).orElse(null);
-        if(exists == null) {
+        if (exists == null) {
             return new ErrorResult("Not found!");
-        } else {
-            productDao.save(product);
-            return new SuccessResult("Product updated.");
         }
+        productDao.save(product);
+        return new SuccessResult("Product updated.");
     }
 
     @Override
     public DataResult<Product> getById(int id) {
         Product product = productDao.findById(id).orElse(null);
-        if(product == null) {
+        if (product == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(product);
         }
+        return new SuccessDataResult<>(product);
     }
 
     @Override

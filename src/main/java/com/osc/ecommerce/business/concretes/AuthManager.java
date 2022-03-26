@@ -29,12 +29,11 @@ public class AuthManager implements AuthService {
         DataResult<String> result = adminService.save(adminDto);
         if (!result.isSuccess()) {
             return new ErrorDataResult<>(null, "Email already taken!");
-        } else {
-            String token = result.getData();
-            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-            emailSenderService.send(adminDto.getEmail(), buildEmail(adminDto.getFirstName(), link));
-            return new SuccessDataResult<>(token, "Admin registered.");
         }
+        String token = result.getData();
+        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        emailSenderService.send(adminDto.getEmail(), buildEmail(adminDto.getFirstName(), link));
+        return new SuccessDataResult<>(token, "Admin registered.");
     }
 
     @Override
@@ -42,12 +41,11 @@ public class AuthManager implements AuthService {
         DataResult<String> result = customerService.save(customerDto);
         if (!result.isSuccess()) {
             return new ErrorDataResult<>(null, "Email already taken!");
-        } else {
-            String token = result.getData();
-            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-            emailSenderService.send(customerDto.getEmail(), buildEmail(customerDto.getFirstName(), link));
-            return new SuccessDataResult<>(token, "Customer registered.");
         }
+        String token = result.getData();
+        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        emailSenderService.send(customerDto.getEmail(), buildEmail(customerDto.getFirstName(), link));
+        return new SuccessDataResult<>(token, "Customer registered.");
     }
 
     @Override
@@ -55,12 +53,11 @@ public class AuthManager implements AuthService {
         DataResult<String> result = supplierService.save(supplierDto);
         if (!result.isSuccess()) {
             return new ErrorDataResult<>(null, "Email already taken!");
-        } else {
-            String token = result.getData();
-            String link = "http://localhost:8080/api/auth/confirm?token=" + token;
-            emailSenderService.send(supplierDto.getEmail(), buildEmail(supplierDto.getName(), link));
-            return new SuccessDataResult<>(token, "Supplier registered.");
         }
+        String token = result.getData();
+        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        emailSenderService.send(supplierDto.getEmail(), buildEmail(supplierDto.getName(), link));
+        return new SuccessDataResult<>(token, "Supplier registered.");
     }
 
     @Override

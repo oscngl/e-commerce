@@ -31,28 +31,26 @@ public class SupplierManager implements SupplierService {
     @Override
     public DataResult<String> save(SupplierDto supplierDto) {
         DataResult<User> exists = userService.getByConfirmedEmail(supplierDto.getEmail());
-        if(exists != null && exists.isSuccess() && exists.getData() != null) {
+        if (exists != null && exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
-        } else {
-            Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
-            String encodedPassword = bCryptPasswordEncoder.encode(supplier.getPassword());
-            supplier.setPassword(encodedPassword);
-            supplier.getRoles().add(roleService.getByName("ROLE_SUPPLIER").getData());
-            supplierDao.save(supplier);
-            ConfirmationToken confirmationToken = new ConfirmationToken(supplier);
-            confirmationTokenService.save(confirmationToken);
-            return new SuccessDataResult<>(confirmationToken.getToken(), "Supplier saved.");
         }
+        Supplier supplier = modelMapper.map(supplierDto, Supplier.class);
+        String encodedPassword = bCryptPasswordEncoder.encode(supplier.getPassword());
+        supplier.setPassword(encodedPassword);
+        supplier.getRoles().add(roleService.getByName("ROLE_SUPPLIER").getData());
+        supplierDao.save(supplier);
+        ConfirmationToken confirmationToken = new ConfirmationToken(supplier);
+        confirmationTokenService.save(confirmationToken);
+        return new SuccessDataResult<>(confirmationToken.getToken(), "Supplier saved.");
     }
 
     @Override
     public DataResult<Supplier> getById(int id) {
         Supplier supplier = supplierDao.findById(id).orElse(null);
-        if(supplier == null) {
+        if (supplier == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(supplier);
         }
+        return new SuccessDataResult<>(supplier);
     }
 
     @Override
@@ -63,11 +61,10 @@ public class SupplierManager implements SupplierService {
     @Override
     public DataResult<Supplier> getByEmail(String email) {
         Supplier supplier = supplierDao.findByConfirmedIsTrueAndEmail(email);
-        if(supplier == null) {
+        if (supplier == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(supplier);
         }
+        return new SuccessDataResult<>(supplier);
     }
 
 }

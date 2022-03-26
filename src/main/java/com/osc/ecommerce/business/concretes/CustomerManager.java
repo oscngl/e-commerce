@@ -31,28 +31,26 @@ public class CustomerManager implements CustomerService {
     @Override
     public DataResult<String> save(CustomerDto customerDto) {
         DataResult<User> exists = userService.getByConfirmedEmail(customerDto.getEmail());
-        if(exists != null && exists.isSuccess() && exists.getData() != null) {
+        if (exists != null && exists.isSuccess() && exists.getData() != null) {
             return new ErrorDataResult<>(null, "Email already taken!");
-        } else {
-            Customer customer = modelMapper.map(customerDto, Customer.class);
-            String encodedPassword = bCryptPasswordEncoder.encode(customer.getPassword());
-            customer.setPassword(encodedPassword);
-            customer.getRoles().add(roleService.getByName("ROLE_CUSTOMER").getData());
-            customerDao.save(customer);
-            ConfirmationToken confirmationToken = new ConfirmationToken(customer);
-            confirmationTokenService.save(confirmationToken);
-            return new SuccessDataResult<>(confirmationToken.getToken(), "Customer saved.");
         }
+        Customer customer = modelMapper.map(customerDto, Customer.class);
+        String encodedPassword = bCryptPasswordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
+        customer.getRoles().add(roleService.getByName("ROLE_CUSTOMER").getData());
+        customerDao.save(customer);
+        ConfirmationToken confirmationToken = new ConfirmationToken(customer);
+        confirmationTokenService.save(confirmationToken);
+        return new SuccessDataResult<>(confirmationToken.getToken(), "Customer saved.");
     }
 
     @Override
     public DataResult<Customer> getById(int id) {
         Customer customer = customerDao.findById(id).orElse(null);
-        if(customer == null) {
+        if (customer == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(customer);
         }
+        return new SuccessDataResult<>(customer);
     }
 
     @Override
@@ -63,11 +61,10 @@ public class CustomerManager implements CustomerService {
     @Override
     public DataResult<Customer> getByEmail(String email) {
         Customer customer = customerDao.findByConfirmedIsTrueAndEmail(email);
-        if(customer == null) {
+        if (customer == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(customer);
         }
+        return new SuccessDataResult<>(customer);
     }
 
 }

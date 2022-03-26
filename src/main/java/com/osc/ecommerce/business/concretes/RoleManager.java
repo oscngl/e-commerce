@@ -26,11 +26,10 @@ public class RoleManager implements RoleService {
     @Override
     public DataResult<Role> getByName(String name) {
         Role role = roleDao.findByName(name);
-        if(role == null) {
+        if (role == null) {
             return new ErrorDataResult<>(null, "Role not found!");
-        } else {
-            return new SuccessDataResult<>(role);
         }
+        return new SuccessDataResult<>(role);
     }
 
 }

@@ -24,16 +24,18 @@ public class ConfirmationTokenManager implements ConfirmationTokenService {
     @Override
     public DataResult<ConfirmationToken> getByToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenDao.findByToken(token);
-        if(confirmationToken == null) {
+        if (confirmationToken == null) {
             return new ErrorDataResult<>("Not found!");
-        } else {
-            return new SuccessDataResult<>(confirmationToken);
         }
+        return new SuccessDataResult<>(confirmationToken);
     }
 
     @Override
     public Result setConfirmedAt(String token) {
         ConfirmationToken confirmationToken = confirmationTokenDao.findByToken(token);
+        if (confirmationToken == null) {
+            return new ErrorDataResult<>("Not found!");
+        }
         confirmationToken.setConfirmedAt(LocalDateTime.now());
         confirmationTokenDao.save(confirmationToken);
         return new SuccessResult("Token confirmed.");

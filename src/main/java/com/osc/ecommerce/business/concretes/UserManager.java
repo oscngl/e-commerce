@@ -23,39 +23,36 @@ public class UserManager implements UserService, UserDetailsService {
     @Override
     public Result confirm(int id) {
         User user = userDao.findById(id).orElse(null);
-        if(user == null) {
+        if (user == null) {
             return new ErrorResult("User not found!");
-        } else {
-            user.setConfirmed(true);
-            userDao.save(user);
-            return new SuccessResult("User confirmed.");
         }
+        user.setConfirmed(true);
+        userDao.save(user);
+        return new SuccessResult("User confirmed.");
     }
 
     @Override
     public DataResult<User> getByConfirmedEmail(String email) {
         User user = userDao.findByConfirmedIsTrueAndEmail(email);
-        if(user == null) {
+        if (user == null) {
             return new ErrorDataResult<>(null, "User not found");
-        } else {
-            return new SuccessDataResult<>(user);
         }
+        return new SuccessDataResult<>(user);
     }
 
     @Override
     public DataResult<User> getByEmail(String email) {
         User user = userDao.findByEmail(email);
-        if(user == null) {
+        if (user == null) {
             return new ErrorDataResult<>(null, "User not found");
-        } else {
-            return new SuccessDataResult<>(user);
         }
+        return new SuccessDataResult<>(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDao.findByConfirmedIsTrueAndEmail(email);
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("User not found in the database!");
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
