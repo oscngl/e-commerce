@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageUploadService {
 
-    DataResult<String> upload(MultipartFile file);
+    DataResult<String> uploadImageProduct(MultipartFile image);
 
 }

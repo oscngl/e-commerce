@@ -26,8 +26,6 @@ public class ProductDto {
     @NotNull(message = "Price is required!")
     private int price;
 
-    private String photoUrl;
-
     @NotNull(message = "Category is required!")
     private Category category;
 

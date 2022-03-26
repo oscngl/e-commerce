@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,9 +30,6 @@ public class Product {
     @Column(name = "price")
     private int price;
 
-    @Column(name = "photo_url")
-    private String photoUrl;
-
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Category.class)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -39,5 +37,8 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Supplier.class)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
+
+    @OneToMany(mappedBy = "product")
+    private List<ImageProduct> images;
 
 }

@@ -26,27 +26,25 @@ public class CloudinaryManager implements ImageUploadService {
     }
 
     @Override
-    public DataResult<String> upload(MultipartFile file) {
+    public DataResult<String> uploadImageProduct(MultipartFile image) {
         try {
             Map uploadResult = cloudinary
                     .uploader()
                     .upload(
-                            file.getBytes(),
+                            image.getBytes(),
                             ObjectUtils.asMap(
                                     "folder", "e-commerce.product.photos",
                                     "transformation", new Transformation().height(500).width(500).crop("scale"))
                     );
-            if(uploadResult == null) {
+            if (uploadResult == null) {
                 return new ErrorDataResult<>(null, "Failed to upload!");
-            } else {
-                JSONObject response = new JSONObject(uploadResult);
-                String url = response.getString("url");
-                if(url == null) {
-                    return new ErrorDataResult<>(null, "Failed to get url!");
-                } else {
-                    return new SuccessDataResult<>(url, null);
-                }
             }
+            JSONObject response = new JSONObject(uploadResult);
+            String url = response.getString("url");
+            if (url == null) {
+                return new ErrorDataResult<>(null, "Failed to get url!");
+            }
+            return new SuccessDataResult<>(url, null);
         } catch (IOException e) {
             return new ErrorDataResult<>(null, e.getMessage());
         }
