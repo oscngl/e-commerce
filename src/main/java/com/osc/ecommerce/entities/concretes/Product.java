@@ -30,6 +30,12 @@ public class Product {
     @Column(name = "price")
     private int price;
 
+    @Column(name = "stock_quantity")
+    private int stockQuantity;
+
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Category.class)
     @JoinColumn(name = "category_id")
     private Category category;

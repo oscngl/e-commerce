@@ -26,6 +26,9 @@ public class ProductDto {
     @NotNull(message = "Price is required!")
     private int price;
 
+    @NotNull(message = "Stock Quantity is required!")
+    private int stockQuantity;
+
     @NotNull(message = "Category is required!")
     private Category category;
 

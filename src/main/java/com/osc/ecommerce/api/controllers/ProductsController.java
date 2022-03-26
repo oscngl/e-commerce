@@ -29,6 +29,11 @@ public class ProductsController {
         return this.productService.update(product);
     }
 
+    @PutMapping("/setDisable")
+    public Result setDisable(@RequestParam int id) {
+        return productService.setDisable(id);
+    }
+
     @GetMapping("/getById")
     public DataResult<Product> getById(int id) {
         return this.productService.getById(id);

@@ -11,6 +11,7 @@ public interface ProductService {
 
     Result save(ProductDto productDto);
     Result update(Product product);
+    Result setDisable(int id);
     DataResult<Product> getById(int id);
     DataResult<List<Product>> getAll();
     DataResult<List<Product>> getAllByCategoryId(int categoryId);

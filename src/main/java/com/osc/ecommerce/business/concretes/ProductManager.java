@@ -36,6 +36,17 @@ public class ProductManager implements ProductService {
     }
 
     @Override
+    public Result setDisable(int id) {
+        Product exists = productDao.findById(id).orElse(null);
+        if (exists == null) {
+            return new ErrorResult("Not found!");
+        }
+        exists.setEnabled(false);
+        productDao.save(exists);
+        return new SuccessResult("Product disabled.");
+    }
+
+    @Override
     public DataResult<Product> getById(int id) {
         Product product = productDao.findById(id).orElse(null);
         if (product == null) {
