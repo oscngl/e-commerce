@@ -3,22 +3,21 @@ package com.osc.ecommerce.business.concretes;
 import com.osc.ecommerce.core.utilities.results.DataResult;
 import com.osc.ecommerce.dal.abstracts.CategoryDao;
 import com.osc.ecommerce.entities.concretes.Category;
-import com.osc.ecommerce.entities.concretes.Product;
 import com.osc.ecommerce.entities.dtos.CategoryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryManagerTest {
@@ -30,7 +29,11 @@ class CategoryManagerTest {
 
     @BeforeEach
     void setUp() {
-        categoryManager = new CategoryManager(categoryDao, new ModelMapper());
+        MockitoAnnotations.openMocks(this);
+        categoryManager = new CategoryManager(
+                categoryDao,
+                new ModelMapper()
+        );
     }
 
     @Test
@@ -45,6 +48,7 @@ class CategoryManagerTest {
         ArgumentCaptor<Category> categoryArgumentCaptor = ArgumentCaptor.forClass(Category.class);
         verify(categoryDao).save(categoryArgumentCaptor.capture());
         Category capturedCategory = categoryArgumentCaptor.getValue();
+
         assertThat(capturedCategory.getName()).isEqualTo(categoryDto.getName());
 
     }
@@ -53,18 +57,14 @@ class CategoryManagerTest {
     void canGetById() {
 
         int id = 1;
-        String name = "name";
-        List<Product> productList = new ArrayList<>();
-        Category category = new Category(id, name, productList);
+        Category category = new Category();
+        category.setId(id);
 
-        when(categoryDao.findById(id)).thenReturn(Optional.of(category));
+        given(categoryDao.findById(id)).willReturn(Optional.of(category));
 
         DataResult<Category> expected = categoryManager.getById(id);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getName()).isEqualTo(name);
-        assertThat(expected.getData().getProducts()).isEqualTo(productList);
+        assertThat(expected.getData()).isEqualTo(category);
 
     }
 
@@ -80,19 +80,15 @@ class CategoryManagerTest {
     @Test
     void canGetByEmail() {
 
-        int id = 1;
         String name = "name";
-        List<Product> productList = new ArrayList<>();
-        Category category = new Category(id, name, productList);
+        Category category = new Category();
+        category.setName(name);
 
-        when(categoryDao.findByName(name)).thenReturn(category);
+        given(categoryDao.findByName(name)).willReturn(category);
 
         DataResult<Category> expected = categoryManager.getByName(name);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getName()).isEqualTo(name);
-        assertThat(expected.getData().getProducts()).isEqualTo(productList);
+        assertThat(expected.getData()).isEqualTo(category);
 
     }
 

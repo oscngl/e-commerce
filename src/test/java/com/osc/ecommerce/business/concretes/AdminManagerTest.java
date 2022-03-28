@@ -1,10 +1,12 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.RoleService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
+import com.osc.ecommerce.core.utilities.results.ErrorDataResult;
+import com.osc.ecommerce.core.utilities.results.SuccessDataResult;
 import com.osc.ecommerce.dal.abstracts.AdminDao;
-import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
-import com.osc.ecommerce.dal.abstracts.RoleDao;
-import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.Role;
 import com.osc.ecommerce.entities.dtos.AdminDto;
@@ -12,17 +14,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AdminManagerTest {
@@ -33,53 +35,51 @@ class AdminManagerTest {
     private AdminDao adminDao;
 
     @Mock
-    private UserDao userDao;
-
-    @InjectMocks
-    private UserManager userManager;
+    private UserService userService;
 
     @Mock
-    private RoleDao roleDao;
-
-    @InjectMocks
-    private RoleManager roleManager;
+    private RoleService roleService;
 
     @Mock
-    private ConfirmationTokenDao confirmationTokenDao;
-
-    @InjectMocks
-    private ConfirmationTokenManager confirmationTokenManager;
+    private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        adminManager = new AdminManager(adminDao, userManager, roleManager, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenManager);
+        MockitoAnnotations.openMocks(this);
+        adminManager = new AdminManager(
+                adminDao,
+                userService,
+                roleService,
+                new ModelMapper(),
+                new BCryptPasswordEncoder(),
+                confirmationTokenService);
     }
 
-    @Transactional
     @Test
     void canSave() {
 
-        Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        roleDao.save(role);
-
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String email = "email@gmail.com";
         AdminDto adminDto = new AdminDto(
-                "firstName",
-                "lastName",
-                "email@gmail.com",
-                "12345678"
+                firstName,
+                lastName,
+                email,
+                "password"
         );
 
-        DataResult<String> result = adminManager.save(adminDto);
+        given(userService.getByConfirmedEmail(adminDto.getEmail())).willReturn(new ErrorDataResult<>());
+        given(roleService.getByName("ROLE_ADMIN")).willReturn(new SuccessDataResult<>(new Role(), null));
+
+        adminManager.save(adminDto);
 
         ArgumentCaptor<Admin> adminArgumentCaptor = ArgumentCaptor.forClass(Admin.class);
         verify(adminDao).save(adminArgumentCaptor.capture());
         Admin capturedAdmin = adminArgumentCaptor.getValue();
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getMessage()).isEqualTo("Admin saved.");
-        assertThat(capturedAdmin.getFirstName()).isEqualTo(adminDto.getFirstName());
-        assertThat(capturedAdmin.getLastName()).isEqualTo(adminDto.getLastName());
-        assertThat(capturedAdmin.getEmail()).isEqualTo(adminDto.getEmail());
+
+        assertThat(capturedAdmin.getFirstName()).isEqualTo(firstName);
+        assertThat(capturedAdmin.getLastName()).isEqualTo(lastName);
+        assertThat(capturedAdmin.getEmail()).isEqualTo(email);
 
     }
 
@@ -87,21 +87,14 @@ class AdminManagerTest {
     void canGetById() {
 
         int id = 1;
-        String firstName = "firstName";
-        String lastName = "lastName";
         Admin admin = new Admin();
         admin.setId(id);
-        admin.setFirstName(firstName);
-        admin.setLastName(lastName);
 
-        when(adminDao.findById(id)).thenReturn(Optional.of(admin));
+        given(adminDao.findById(id)).willReturn(Optional.of(admin));
 
         DataResult<Admin> expected = adminManager.getById(id);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getFirstName()).isEqualTo(firstName);
-        assertThat(expected.getData().getLastName()).isEqualTo(lastName);
+        assertThat(expected.getData()).isEqualTo(admin);
 
     }
 
@@ -117,27 +110,19 @@ class AdminManagerTest {
     @Test
     void canGetByEmail() {
 
-        int id = 1;
-        String firstName = "firstName";
-        String lastName = "lastName";
         String email = "email@gmail.com";
         Admin admin = new Admin();
-        admin.setId(id);
-        admin.setFirstName(firstName);
-        admin.setLastName(lastName);
+        admin.setId(1);
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
         admin.setEmail(email);
         admin.setConfirmed(true);
 
-        when(adminDao.findByConfirmedIsTrueAndEmail(email)).thenReturn(admin);
+        given(adminDao.findByConfirmedIsTrueAndEmail(email)).willReturn(admin);
 
         DataResult<Admin> expected = adminManager.getByEmail(email);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getFirstName()).isEqualTo(firstName);
-        assertThat(expected.getData().getLastName()).isEqualTo(lastName);
-        assertThat(expected.getData().getEmail()).isEqualTo(email);
-        assertThat(expected.getData().isConfirmed()).isTrue();
+        assertThat(expected.getData()).isEqualTo(admin);
 
     }
 

@@ -1,10 +1,12 @@
 package com.osc.ecommerce.business.concretes;
 
+import com.osc.ecommerce.business.abstracts.ConfirmationTokenService;
+import com.osc.ecommerce.business.abstracts.RoleService;
+import com.osc.ecommerce.business.abstracts.UserService;
 import com.osc.ecommerce.core.utilities.results.DataResult;
-import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
+import com.osc.ecommerce.core.utilities.results.ErrorDataResult;
+import com.osc.ecommerce.core.utilities.results.SuccessDataResult;
 import com.osc.ecommerce.dal.abstracts.CustomerDao;
-import com.osc.ecommerce.dal.abstracts.RoleDao;
-import com.osc.ecommerce.dal.abstracts.UserDao;
 import com.osc.ecommerce.entities.concretes.Customer;
 import com.osc.ecommerce.entities.concretes.Role;
 import com.osc.ecommerce.entities.dtos.CustomerDto;
@@ -12,8 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,8 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerManagerTest {
@@ -33,49 +35,48 @@ class CustomerManagerTest {
     private CustomerDao customerDao;
 
     @Mock
-    private UserDao userDao;
-
-    @InjectMocks
-    private UserManager userManager;
+    private UserService userService;
 
     @Mock
-    private RoleDao roleDao;
-
-    @InjectMocks
-    private RoleManager roleManager;
+    private RoleService roleService;
 
     @Mock
-    private ConfirmationTokenDao confirmationTokenDao;
-
-    @InjectMocks
-    private ConfirmationTokenManager confirmationTokenManager;
+    private ConfirmationTokenService confirmationTokenService;
 
     @BeforeEach
     void setUp() {
-        customerManager = new CustomerManager(customerDao, userManager, roleManager, new ModelMapper(), new BCryptPasswordEncoder(), confirmationTokenManager);
+        MockitoAnnotations.openMocks(this);
+        customerManager = new CustomerManager(
+                customerDao,
+                userService,
+                roleService,
+                new ModelMapper(),
+                new BCryptPasswordEncoder(),
+                confirmationTokenService);
     }
 
     @Test
     void canSave() {
 
-        Role role = new Role();
-        role.setName("ROLE_CUSTOMER");
-        roleDao.save(role);
-
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String email = "email@gmail.com";
         CustomerDto customerDto = new CustomerDto(
-                "firstName",
-                "lastName",
-                "email@gmail.com",
+                firstName,
+                lastName,
+                email,
                 "12345678"
         );
+        given(userService.getByConfirmedEmail(customerDto.getEmail())).willReturn(new ErrorDataResult<>());
 
-        DataResult<String> result = customerManager.save(customerDto);
+        given(roleService.getByName("ROLE_CUSTOMER")).willReturn(new SuccessDataResult<>(new Role(), null));
+
+        customerManager.save(customerDto);
 
         ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
         verify(customerDao).save(customerArgumentCaptor.capture());
         Customer capturedCustomer = customerArgumentCaptor.getValue();
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getMessage()).isEqualTo("Customer saved.");
+
         assertThat(capturedCustomer.getFirstName()).isEqualTo(customerDto.getFirstName());
         assertThat(capturedCustomer.getLastName()).isEqualTo(customerDto.getLastName());
         assertThat(capturedCustomer.getEmail()).isEqualTo(customerDto.getEmail());
@@ -86,21 +87,16 @@ class CustomerManagerTest {
     void canGetById() {
 
         int id = 1;
-        String firstName = "firstName";
-        String lastName = "lastName";
         Customer customer = new Customer();
         customer.setId(id);
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
+        customer.setFirstName("firstName");
+        customer.setLastName("lastName");
 
-        when(customerDao.findById(id)).thenReturn(Optional.of(customer));
+        given(customerDao.findById(id)).willReturn(Optional.of(customer));
 
         DataResult<Customer> expected = customerManager.getById(id);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getFirstName()).isEqualTo(firstName);
-        assertThat(expected.getData().getLastName()).isEqualTo(lastName);
+        assertThat(expected.getData()).isEqualTo(customer);
 
     }
 
@@ -116,27 +112,19 @@ class CustomerManagerTest {
     @Test
     void canGetByEmail() {
 
-        int id = 1;
-        String firstName = "firstName";
-        String lastName = "lastName";
         String email = "email@gmail.com";
         Customer customer = new Customer();
-        customer.setId(id);
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
+        customer.setId(1);
+        customer.setFirstName("firstName");
+        customer.setLastName("lastName");
         customer.setEmail(email);
         customer.setConfirmed(true);
 
-        when(customerDao.findByConfirmedIsTrueAndEmail(email)).thenReturn(customer);
+        given(customerDao.findByConfirmedIsTrueAndEmail(email)).willReturn(customer);
 
         DataResult<Customer> expected = customerManager.getByEmail(email);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getFirstName()).isEqualTo(firstName);
-        assertThat(expected.getData().getLastName()).isEqualTo(lastName);
-        assertThat(expected.getData().getEmail()).isEqualTo(email);
-        assertThat(expected.getData().isConfirmed()).isTrue();
+        assertThat(expected.getData()).isEqualTo(customer);
 
     }
 

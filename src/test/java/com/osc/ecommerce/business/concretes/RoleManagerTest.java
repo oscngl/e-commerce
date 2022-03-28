@@ -1,7 +1,6 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.core.utilities.results.DataResult;
-import com.osc.ecommerce.core.utilities.results.Result;
 import com.osc.ecommerce.dal.abstracts.RoleDao;
 import com.osc.ecommerce.entities.concretes.Role;
 import com.osc.ecommerce.entities.dtos.RoleDto;
@@ -10,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RoleManagerTest {
@@ -26,43 +27,44 @@ class RoleManagerTest {
 
     @BeforeEach
     void setUp() {
-        roleManager = new RoleManager(roleDao, new ModelMapper());
+        MockitoAnnotations.openMocks(this);
+        roleManager = new RoleManager(
+                roleDao,
+                new ModelMapper()
+        );
     }
 
     @Test
     void canSave() {
 
+        String name = "name";
         RoleDto roleDto = new RoleDto(
-                "name"
+                name
         );
 
-        Result result = roleManager.save(roleDto);
+        roleManager.save(roleDto);
 
         ArgumentCaptor<Role> roleArgumentCaptor = ArgumentCaptor.forClass(Role.class);
         verify(roleDao).save(roleArgumentCaptor.capture());
         Role capturedRole = roleArgumentCaptor.getValue();
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getMessage()).isEqualTo("Role saved.");
-        assertThat(capturedRole.getName()).isEqualTo(roleDto.getName());
+
+        assertThat(capturedRole.getName()).isEqualTo(name);
 
     }
 
     @Test
     void canGetByName() {
 
-        int id = 1;
         String name = "name";
         Role role = new Role();
-        role.setId(id);
+        role.setId(1);
         role.setName(name);
 
-        when(roleDao.findByName(name)).thenReturn(role);
+        given(roleDao.findByName(name)).willReturn(role);
 
         DataResult<Role> expected = roleManager.getByName(name);
 
-        assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getName()).isEqualTo(name);
+        assertThat(expected.getData()).isEqualTo(role);
 
     }
 

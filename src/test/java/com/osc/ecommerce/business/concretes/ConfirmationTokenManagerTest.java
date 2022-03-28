@@ -1,6 +1,7 @@
 package com.osc.ecommerce.business.concretes;
 
 import com.osc.ecommerce.core.utilities.results.DataResult;
+import com.osc.ecommerce.core.utilities.results.Result;
 import com.osc.ecommerce.dal.abstracts.ConfirmationTokenDao;
 import com.osc.ecommerce.entities.concretes.Admin;
 import com.osc.ecommerce.entities.concretes.ConfirmationToken;
@@ -9,12 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ConfirmationTokenManagerTest {
@@ -26,7 +29,10 @@ class ConfirmationTokenManagerTest {
 
     @BeforeEach
     void setUp() {
-        confirmationTokenManager = new ConfirmationTokenManager(confirmationTokenDao);
+        MockitoAnnotations.openMocks(this);
+        confirmationTokenManager = new ConfirmationTokenManager(
+                confirmationTokenDao
+        );
     }
 
     @Test
@@ -48,32 +54,34 @@ class ConfirmationTokenManagerTest {
     @Test
     void canGetByToken() {
 
-        int id = 1;
         String token = "token";
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime confirmedAt = LocalDateTime.now();
-        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
-        Admin user = new Admin();
         ConfirmationToken confirmationToken = new ConfirmationToken(
-                id,
+                1,
                 token,
-                createdAt,
-                confirmedAt,
-                expiresAt,
-                user
+                LocalDateTime.now(),
+                null,
+                LocalDateTime.now().plusMinutes(15),
+                new Admin()
         );
 
-        when(confirmationTokenDao.findByToken(token)).thenReturn(confirmationToken);
+        given(confirmationTokenDao.findByToken(token)).willReturn(confirmationToken);
 
         DataResult<ConfirmationToken> expected = confirmationTokenManager.getByToken(token);
 
+        assertThat(expected.getData()).isEqualTo(confirmationToken);
+
+    }
+
+    @Test
+    void canSetConfirmedAt() {
+
+        String token = "token";
+
+        given(confirmationTokenDao.findByToken(token)).willReturn(new ConfirmationToken());
+
+        Result expected = confirmationTokenManager.setConfirmedAt(token);
+
         assertThat(expected.isSuccess()).isTrue();
-        assertThat(expected.getData().getId()).isEqualTo(id);
-        assertThat(expected.getData().getToken()).isEqualTo(token);
-        assertThat(expected.getData().getCreatedAt()).isEqualTo(createdAt);
-        assertThat(expected.getData().getConfirmedAt()).isEqualTo(confirmedAt);
-        assertThat(expected.getData().getExpiresAt()).isEqualTo(expiresAt);
-        assertThat(expected.getData().getUser()).isEqualTo(user);
 
     }
 
