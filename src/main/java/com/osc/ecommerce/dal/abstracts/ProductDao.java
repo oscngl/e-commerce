@@ -9,7 +9,8 @@ import java.util.List;
 @Repository
 public interface ProductDao extends JpaRepository<Product, Integer> {
 
-    List<Product> findAllByCategory_Id(int categoryId);
-    List<Product> findAllBySupplier_Id(int supplierId);
+    List<Product> findAllByEnabledIsTrue();
+    List<Product> findAllByEnabledIsTrueAndCategory_Id(int categoryId);
+    List<Product> findAllByEnabledIsTrueAndSupplier_Id(int supplierId);
 
 }

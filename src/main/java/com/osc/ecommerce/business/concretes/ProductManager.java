@@ -57,17 +57,17 @@ public class ProductManager implements ProductService {
 
     @Override
     public DataResult<List<Product>> getAll() {
-        return new SuccessDataResult<>(productDao.findAll());
+        return new SuccessDataResult<>(productDao.findAllByEnabledIsTrue());
     }
 
     @Override
     public DataResult<List<Product>> getAllByCategoryId(int categoryId) {
-        return new SuccessDataResult<>(productDao.findAllByCategory_Id(categoryId));
+        return new SuccessDataResult<>(productDao.findAllByEnabledIsTrueAndCategory_Id(categoryId));
     }
 
     @Override
     public DataResult<List<Product>> getAllBySupplierId(int supplierId) {
-        return new SuccessDataResult<>(productDao.findAllBySupplier_Id(supplierId));
+        return new SuccessDataResult<>(productDao.findAllByEnabledIsTrueAndSupplier_Id(supplierId));
     }
 
 }
