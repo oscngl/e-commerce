@@ -27,11 +27,12 @@ class UserDaoTest {
 
     @AfterEach
     void tearDown() {
+        adminDao.deleteAll();
         userDao.deleteAll();
     }
 
     @Test
-    void itShouldCheckWhenEmailExists() {
+    void itShouldFindByEmailWhenUserWithEmailExists() {
 
         String email = "email@gmail.com";
         String password = "password";
@@ -50,16 +51,18 @@ class UserDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenEmailDoesNotExists() {
+    void itShouldNotFindByEmailWhenUserWithEmailDoesNotExists() {
 
-        User expected = userDao.findByEmail("email@gmail.com");
+        String email = "email@gmail.com";
+
+        User expected = userDao.findByEmail(email);
 
         assertThat(expected).isNull();
 
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsTrueAndEmailExists() {
+    void itShouldFindByConfirmedIsTrueAndEmailWhenConfirmedIsTrueAndUserWithEmailExists() {
 
         String email = "email@gmail.com";
         String password = "password";
@@ -79,14 +82,16 @@ class UserDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsNotTrueAndEmailExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenConfirmedIsFalseAndUserWithEmailExists() {
 
         String email = "email@gmail.com";
+        String password = "password";
         Admin admin = new Admin();
-        admin.setEmail(email);
-        admin.setPassword("password");
         admin.setFirstName("firstName");
         admin.setLastName("lastName");
+        admin.setEmail(email);
+        admin.setPassword(password);
+        admin.setConfirmed(false);
         adminDao.save(admin);
 
         User expected = userDao.findByConfirmedIsTrueAndEmail(email);
@@ -96,7 +101,7 @@ class UserDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenUserDoesNotExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenUserWithEmailDoesNotExists() {
 
         String email = "email@gmail.com";
 
@@ -107,7 +112,7 @@ class UserDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedExists() {
+    void itShouldFindAllByConfirmedIsTrueWhenConfirmedIsTrueAndUserExists() {
 
         Admin admin = new Admin();
         admin.setFirstName("firstName");
@@ -124,7 +129,24 @@ class UserDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedDoesNotExists() {
+    void itShouldNotFindAllByConfirmedIsTrueWhenConfirmedIsFalseAndUserExists() {
+
+        Admin admin = new Admin();
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
+        admin.setEmail("email@gmail.com");
+        admin.setPassword("password");
+        admin.setConfirmed(false);
+        adminDao.save(admin);
+
+        List<User> expected = userDao.findAllByConfirmedIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByConfirmedIsTrueWhenUserDoesNotExists() {
 
         List<User> expected = userDao.findAllByConfirmedIsTrue();
 

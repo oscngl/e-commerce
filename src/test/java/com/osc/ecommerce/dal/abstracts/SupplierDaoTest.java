@@ -27,7 +27,7 @@ class SupplierDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsTrueAndEmailExists() {
+    void itShouldFindByConfirmedIsTrueAndEmailWhenConfirmedIsTrueAndSupplierWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Supplier supplier = new Supplier();
@@ -44,10 +44,11 @@ class SupplierDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsNotTrueAndEmailExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenConfirmedIsFalseAndSupplierWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Supplier supplier = new Supplier();
+        supplier.setConfirmed(false);
         supplier.setEmail(email);
         supplier.setPassword("password");
         supplier.setName("name");
@@ -60,7 +61,7 @@ class SupplierDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenEmailDoesNotExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenSupplierWithEmailDoesNotExists() {
 
         String email = "oscngl@gmail.com";
 
@@ -71,7 +72,7 @@ class SupplierDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedExists() {
+    void itShouldFindAllByConfirmedIsTrueWhenConfirmedIsTrueAndSupplierExists() {
 
         Supplier supplier = new Supplier();
         supplier.setConfirmed(true);
@@ -87,7 +88,23 @@ class SupplierDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedDoesNotExists() {
+    void itShouldFindAllByConfirmedIsTrueWhenConfirmedIsFalseAndSupplierExists() {
+
+        Supplier supplier = new Supplier();
+        supplier.setConfirmed(false);
+        supplier.setEmail("email");
+        supplier.setPassword("password");
+        supplier.setName("name");
+        supplierDao.save(supplier);
+
+        List<Supplier> expected = supplierDao.findAllByConfirmedIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByConfirmedIsTrueWhenSupplierDoesNotExists() {
 
         List<Supplier> expected = supplierDao.findAllByConfirmedIsTrue();
 

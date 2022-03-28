@@ -27,7 +27,7 @@ class AdminDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsTrueAndEmailExists() {
+    void itShouldFindByConfirmedIsTrueAndEmailWhenConfirmedIsTrueAndAdminWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Admin admin = new Admin();
@@ -45,10 +45,11 @@ class AdminDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsNotTrueAndEmailExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenConfirmedIsFalseAndAdminWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Admin admin = new Admin();
+        admin.setConfirmed(false);
         admin.setEmail(email);
         admin.setPassword("password");
         admin.setFirstName("firstName");
@@ -62,7 +63,7 @@ class AdminDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenEmailDoesNotExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenAdminWithEmailDoesNotExists() {
 
         String email = "oscngl@gmail.com";
 
@@ -73,7 +74,7 @@ class AdminDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedExists() {
+    void itShouldFindAllByConfirmedIsTrueWhenConfirmedIsTrueAndAdminExists() {
 
         Admin admin = new Admin();
         admin.setConfirmed(true);
@@ -90,7 +91,24 @@ class AdminDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedDoesNotExists() {
+    void itShouldNotFindAllByConfirmedIsTrueWhenConfirmedIsFalseAndAdminExists() {
+
+        Admin admin = new Admin();
+        admin.setConfirmed(false);
+        admin.setEmail("email");
+        admin.setPassword("password");
+        admin.setFirstName("firstName");
+        admin.setLastName("lastName");
+        adminDao.save(admin);
+
+        List<Admin> expected = adminDao.findAllByConfirmedIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByConfirmedIsTrueWhenAdminDoesNotExists() {
 
         List<Admin> expected = adminDao.findAllByConfirmedIsTrue();
 

@@ -25,7 +25,7 @@ class RoleDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenNameExists() {
+    void itShouldFindByNameWhenNameExists() {
 
         String name = "name";
         Role role = new Role();
@@ -39,9 +39,11 @@ class RoleDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenNameDoesNotExists() {
+    void itShouldNotFindByNameWhenNameDoesNotExists() {
 
-        Role expected = roleDao.findByName("name");
+        String name = "name";
+
+        Role expected = roleDao.findByName(name);
 
         assertThat(expected).isNull();
 

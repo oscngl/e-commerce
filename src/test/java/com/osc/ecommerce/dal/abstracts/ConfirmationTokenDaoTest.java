@@ -30,7 +30,7 @@ class ConfirmationTokenDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenTokenExists() {
+    void itShouldFindByTokenWhenTokenExists() {
 
         // user created to give as a parameter to create ConfirmationToken
         String email = "oscngl@gmail.com";
@@ -54,9 +54,9 @@ class ConfirmationTokenDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenTokenDoesNotExists() {
+    void itShouldNotFindByTokenWhenTokenDoesNotExists() {
 
-        String token = "1234";
+        String token = "token";
 
         ConfirmationToken expected = confirmationTokenDao.findByToken(token);
 

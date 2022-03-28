@@ -25,22 +25,25 @@ class CategoryDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenNameExists() {
+    void itShouldFindByNameWhenNameExists() {
 
+        String name = "name";
         Category category = new Category();
-        category.setName("name");
+        category.setName(name);
         categoryDao.save(category);
 
-        Category expected = categoryDao.findByName("name");
+        Category expected = categoryDao.findByName(name);
 
         assertThat(expected).isEqualTo(category);
 
     }
 
     @Test
-    void itShouldCheckWhenNameDoesNotExists() {
+    void itShouldNotFindByNameWhenNameDoesNotExists() {
 
-        Category expected = categoryDao.findByName("name");
+        String name = "name";
+
+        Category expected = categoryDao.findByName(name);
 
         assertThat(expected).isNull();
 

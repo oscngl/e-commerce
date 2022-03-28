@@ -27,7 +27,7 @@ class CustomerDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsTrueAndEmailExists() {
+    void itShouldFindByConfirmedIsTrueAndEmailWhenConfirmedIsTrueAndCustomerWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Customer customer = new Customer();
@@ -44,10 +44,11 @@ class CustomerDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedIsNotTrueAndEmailExists() {
+    void itShouldFindByConfirmedIsTrueAndEmailWhenConfirmedIsFalseAndCustomerWithEmailExists() {
 
         String email = "oscngl@gmail.com";
         Customer customer = new Customer();
+        customer.setConfirmed(false);
         customer.setEmail(email);
         customer.setPassword("password");
         customer.setFirstName("firstName");
@@ -60,7 +61,7 @@ class CustomerDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenEmailDoesNotExists() {
+    void itShouldNotFindByConfirmedIsTrueAndEmailWhenCustomerWithEmailDoesNotExists() {
 
         String email = "oscngl@gmail.com";
 
@@ -71,7 +72,7 @@ class CustomerDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedExists() {
+    void itShouldFindAllByConfirmedIsTrueWhenConfirmedIsTrueAndCustomerExists() {
 
         Customer customer = new Customer();
         customer.setConfirmed(true);
@@ -88,7 +89,24 @@ class CustomerDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenConfirmedDoesNotExists() {
+    void itShouldNotFindAllByConfirmedIsTrueWhenConfirmedIsFalseAndCustomerExists() {
+
+        Customer customer = new Customer();
+        customer.setConfirmed(false);
+        customer.setEmail("email");
+        customer.setPassword("password");
+        customer.setFirstName("firstName");
+        customer.setLastName("lastName");
+        customerDao.save(customer);
+
+        List<Customer> expected = customerDao.findAllByConfirmedIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByConfirmedIsTrueWhenCustomerDoesNotExists() {
 
         List<Customer> expected = customerDao.findAllByConfirmedIsTrue();
 

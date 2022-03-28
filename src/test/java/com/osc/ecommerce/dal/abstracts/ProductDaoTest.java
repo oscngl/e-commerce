@@ -37,7 +37,78 @@ class ProductDaoTest {
     }
 
     @Test
-    void itShouldCheckWhenCategoryIdExists() {
+    void itShouldFindAllByEnabledIsTrueWhenEnabledIsTrueAndProductExists() {
+
+        // category created to give as a parameter to create Product
+        Category category = new Category();
+        category.setName("name");
+        categoryDao.save(category);
+
+        // supplier created to give as a parameter to create Product
+        Supplier supplier = new Supplier();
+        supplier.setName("name");
+        supplier.setEmail("email");
+        supplier.setPassword("password");
+        supplierDao.save(supplier);
+
+        Product product = new Product();
+        product.setName("name");
+        product.setDescription("description");
+        product.setPrice(1);
+        product.setStockQuantity(1);
+        product.setEnabled(true);
+        product.setCategory(category);
+        product.setSupplier(supplier);
+        productDao.save(product);
+
+        List<Product> expected = productDao.findAllByEnabledIsTrue();
+
+        assertThat(expected.isEmpty()).isFalse();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByEnabledIsTrueWhenEnabledIsFalseAndProductExists() {
+
+        // category created to give as a parameter to create Product
+        Category category = new Category();
+        category.setName("name");
+        categoryDao.save(category);
+
+        // supplier created to give as a parameter to create Product
+        Supplier supplier = new Supplier();
+        supplier.setName("name");
+        supplier.setEmail("email");
+        supplier.setPassword("password");
+        supplierDao.save(supplier);
+
+        Product product = new Product();
+        product.setName("name");
+        product.setDescription("description");
+        product.setPrice(1);
+        product.setStockQuantity(1);
+        product.setEnabled(false);
+        product.setCategory(category);
+        product.setSupplier(supplier);
+        productDao.save(product);
+
+        List<Product> expected = productDao.findAllByEnabledIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldNotFindAllByEnabledIsTrueWhenProductDoesNotExists() {
+
+        List<Product> expected = productDao.findAllByEnabledIsTrue();
+
+        assertThat(expected.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    void itShouldFindAllByEnabledIsTrueAndCategoryIdWhenEnabledIsTrueAndProductWithCategoryIdExists() {
 
         // category created to give as a parameter to create Product
         Category category = new Category();
@@ -59,23 +130,57 @@ class ProductDaoTest {
         product.setDescription("description");
         product.setPrice(1);
         product.setSupplier(supplier);
+        product.setEnabled(true);
         productDao.save(product);
 
-        List<Product> expected = productDao.findAllByCategory_Id(categoryId);
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndCategory_Id(categoryId);
 
         assertThat(expected.isEmpty()).isFalse();
     }
 
     @Test
-    void itShouldCheckWhenCategoryIdDoesNotExists() {
+    void itShouldNotFindAllByEnabledIsTrueAndCategoryIdWhenEnabledIsFalseAndProductWithCategoryIdExists() {
 
-        List<Product> expected = productDao.findAllByCategory_Id(1234);
+        // category created to give as a parameter to create Product
+        Category category = new Category();
+        category.setName("name");
+        categoryDao.save(category);
+        List<Category> categories = categoryDao.findAll();
+        int categoryId = categories.get(0).getId();
+
+        // supplier created to give as a parameter to create Product
+        Supplier supplier = new Supplier();
+        supplier.setName("name");
+        supplier.setEmail("email");
+        supplier.setPassword("password");
+        supplierDao.save(supplier);
+
+        Product product = new Product();
+        product.setCategory(category);
+        product.setName("name");
+        product.setDescription("description");
+        product.setPrice(1);
+        product.setSupplier(supplier);
+        product.setEnabled(false);
+        productDao.save(product);
+
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndCategory_Id(categoryId);
 
         assertThat(expected.isEmpty()).isTrue();
     }
 
     @Test
-    void itShouldCheckWhenSupplierIdExists() {
+    void itShouldNotFindAllByEnabledIsTrueAndCategoryIdWhenProductWithCategoryIdDoesNotExists() {
+
+        int categoryId = 1;
+
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndCategory_Id(categoryId);
+
+        assertThat(expected.isEmpty()).isTrue();
+    }
+
+    @Test
+    void itShouldFindAllByEnabledIsTrueAndSupplierIdWhenEnabledIsTrueAndProductWithSupplierIdExists() {
 
         // category created to give as a parameter to create Product
         Category category = new Category();
@@ -92,22 +197,58 @@ class ProductDaoTest {
         int supplierId = suppliers.get(0).getId();
 
         Product product = new Product();
-        product.setCategory(category);
         product.setName("name");
         product.setDescription("description");
         product.setPrice(1);
+        product.setStockQuantity(1);
+        product.setEnabled(true);
+        product.setCategory(category);
         product.setSupplier(supplier);
         productDao.save(product);
 
-        List<Product> expected = productDao.findAllBySupplier_Id(supplierId);
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndSupplier_Id(supplierId);
 
         assertThat(expected.isEmpty()).isFalse();
     }
 
     @Test
-    void itShouldCheckWhenSupplierIdDoesNotExists() {
+    void itShouldNotFindAllByEnabledIsTrueAndSupplierIdWhenEnabledIsFalseAndProductWithSupplierIdExists() {
 
-        List<Product> expected = productDao.findAllBySupplier_Id(1234);
+        // category created to give as a parameter to create Product
+        Category category = new Category();
+        category.setName("name");
+        categoryDao.save(category);
+
+        // supplier created to give as a parameter to create Product
+        Supplier supplier = new Supplier();
+        supplier.setName("name");
+        supplier.setEmail("email");
+        supplier.setPassword("password");
+        supplierDao.save(supplier);
+        List<Supplier> suppliers = supplierDao.findAll();
+        int supplierId = suppliers.get(0).getId();
+
+        Product product = new Product();
+        product.setName("name");
+        product.setDescription("description");
+        product.setPrice(1);
+        product.setStockQuantity(1);
+        product.setEnabled(false);
+        product.setCategory(category);
+        product.setSupplier(supplier);
+        productDao.save(product);
+
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndSupplier_Id(supplierId);
+
+        assertThat(expected.isEmpty()).isTrue();
+    }
+
+    @Test
+    void itShouldNotFindAllByEnabledIsTrueAndSupplierIdWhenProductWithSupplierIdDoesNotExists() {
+
+        int supplierId = 1;
+
+        List<Product> expected = productDao.findAllByEnabledIsTrueAndSupplier_Id(supplierId);
 
         assertThat(expected.isEmpty()).isTrue();
 
