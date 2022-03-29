@@ -75,7 +75,7 @@ class ProductsControllerIT {
                 "name",
                 "description",
                 1,
-                "photoUrl",
+                10,
                 category,
                 supplier
         );
@@ -117,7 +117,7 @@ class ProductsControllerIT {
         product.setName("name");
         product.setDescription("description");
         product.setPrice(1);
-        product.setPhotoUrl("photoUrl");
+        product.setStockQuantity(1);
         product.setCategory(category);
         product.setSupplier(supplier);
         productDao.save(product);
@@ -153,7 +153,7 @@ class ProductsControllerIT {
         product.setName("name");
         product.setDescription("description");
         product.setPrice(1);
-        product.setPhotoUrl("photoUrl");
+        product.setStockQuantity(1);
         product.setCategory(category);
         product.setSupplier(supplier);
 
@@ -177,6 +177,29 @@ class ProductsControllerIT {
     }
 
     @Test
+    void itShouldSetDisableWhenRequestIsValid_isOk() throws Exception {
+
+        int id = 1;
+
+        mockMvc.perform(put("/api/products/setDisable")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("id", objectMapper.writeValueAsString(id))
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void itShouldNotSetDisableWhenRequestIsNotValid_isBadRequest() throws Exception {
+
+        mockMvc.perform(put("/api/products/setDisable")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
     void itShouldGetByIdWhenExists_isOk() throws Exception {
 
         Category category = new Category();
@@ -193,7 +216,7 @@ class ProductsControllerIT {
         product.setName("name");
         product.setDescription("description");
         product.setPrice(1);
-        product.setPhotoUrl("photoUrl");
+        product.setStockQuantity(1);
         product.setCategory(category);
         product.setSupplier(supplier);
 
