@@ -58,7 +58,7 @@ class AdminsControllerIT {
                 "password"
         );
 
-        mockMvc.perform(post("/api/admins/save")
+        mockMvc.perform(post("/api/v1/admins/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(adminDto))
                         .header("Authorization", token))
@@ -70,7 +70,7 @@ class AdminsControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/admins/save")
+        mockMvc.perform(post("/api/v1/admins/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -93,7 +93,7 @@ class AdminsControllerIT {
 
         int id = adminDao.findByConfirmedIsTrueAndEmail(email).getId();
 
-        mockMvc.perform(get("/api/admins/getById")
+        mockMvc.perform(get("/api/v1/admins/getById")
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -105,7 +105,7 @@ class AdminsControllerIT {
     @Test
     void itShouldNotGetByIdWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/admins/getById")
+        mockMvc.perform(get("/api/v1/admins/getById")
                         .param("id", String.valueOf(1))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -117,7 +117,7 @@ class AdminsControllerIT {
     @Test
     void itShouldGetAll_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/admins/getAll")
+        mockMvc.perform(get("/api/v1/admins/getAll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())
@@ -139,7 +139,7 @@ class AdminsControllerIT {
 
         adminDao.save(admin);
 
-        mockMvc.perform(get("/api/admins/getByEmail")
+        mockMvc.perform(get("/api/v1/admins/getByEmail")
                         .param("email", email)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -151,7 +151,7 @@ class AdminsControllerIT {
     @Test
     void itShouldNotGetByEmailWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/admins/getByEmail")
+        mockMvc.perform(get("/api/v1/admins/getByEmail")
                         .param("email", "email@gmail.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -163,7 +163,7 @@ class AdminsControllerIT {
     @Test
     void itShouldNotGetByEmailWhenRequestIsNotValid_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/admins/getByEmail")
+        mockMvc.perform(get("/api/v1/admins/getByEmail")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/tokens")
+@RequestMapping("/api/v1/tokens")
 @RequiredArgsConstructor
 public class TokensController {
 

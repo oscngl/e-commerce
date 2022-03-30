@@ -57,7 +57,7 @@ class SuppliersControllerIT {
                 "password"
         );
 
-        mockMvc.perform(post("/api/suppliers/save")
+        mockMvc.perform(post("/api/v1/suppliers/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(supplierDto))
                         .header("Authorization", token))
@@ -69,7 +69,7 @@ class SuppliersControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/suppliers/save")
+        mockMvc.perform(post("/api/v1/suppliers/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -91,7 +91,7 @@ class SuppliersControllerIT {
 
         int id = supplierDao.findByConfirmedIsTrueAndEmail(email).getId();
 
-        mockMvc.perform(get("/api/suppliers/getById")
+        mockMvc.perform(get("/api/v1/suppliers/getById")
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -103,7 +103,7 @@ class SuppliersControllerIT {
     @Test
     void itShouldNotGetByIdWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/suppliers/getById")
+        mockMvc.perform(get("/api/v1/suppliers/getById")
                         .param("id", String.valueOf(1))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -115,7 +115,7 @@ class SuppliersControllerIT {
     @Test
     void itShouldGetAll_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/suppliers/getAll")
+        mockMvc.perform(get("/api/v1/suppliers/getAll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())
@@ -136,7 +136,7 @@ class SuppliersControllerIT {
 
         supplierDao.save(supplier);
 
-        mockMvc.perform(get("/api/suppliers/getByEmail")
+        mockMvc.perform(get("/api/v1/suppliers/getByEmail")
                         .param("email", email)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -148,7 +148,7 @@ class SuppliersControllerIT {
     @Test
     void itShouldNotGetByEmailWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/suppliers/getByEmail")
+        mockMvc.perform(get("/api/v1/suppliers/getByEmail")
                         .param("email", "email@gmail.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
@@ -160,7 +160,7 @@ class SuppliersControllerIT {
     @Test
     void itShouldNotGetByEmailWhenRequestIsNotValid_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/suppliers/getByEmail")
+        mockMvc.perform(get("/api/v1/suppliers/getByEmail")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isOk())

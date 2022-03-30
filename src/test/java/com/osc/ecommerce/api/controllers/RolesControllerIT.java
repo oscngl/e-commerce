@@ -44,7 +44,7 @@ class RolesControllerIT {
                 "name"
         );
 
-        mockMvc.perform(post("/api/roles/save")
+        mockMvc.perform(post("/api/v1/roles/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(roleDto))
                         .header("Authorization", token))
@@ -56,7 +56,7 @@ class RolesControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/roles/save")
+        mockMvc.perform(post("/api/v1/roles/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());

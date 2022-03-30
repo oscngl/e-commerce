@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/images/products")
+@RequestMapping("/api/v1/images/products")
 @RequiredArgsConstructor
 public class ImageProductsController {
 

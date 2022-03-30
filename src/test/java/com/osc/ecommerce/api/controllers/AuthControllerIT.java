@@ -38,7 +38,7 @@ class AuthControllerIT {
                 "password"
         );
 
-        mockMvc.perform(post("/api/auth/register/admin")
+        mockMvc.perform(post("/api/v1/auth/register/admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(adminDto)))
                 .andExpect(status().isOk())
@@ -49,7 +49,7 @@ class AuthControllerIT {
     @Test
     void itShouldNotRegisterAdminWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/auth/register/admin")
+        mockMvc.perform(post("/api/v1/auth/register/admin")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
@@ -65,7 +65,7 @@ class AuthControllerIT {
                 "password"
         );
 
-        mockMvc.perform(post("/api/auth/register/customer")
+        mockMvc.perform(post("/api/v1/auth/register/customer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDto)))
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class AuthControllerIT {
     @Test
     void itShouldNotRegisterCustomerWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/auth/register/customer")
+        mockMvc.perform(post("/api/v1/auth/register/customer")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
@@ -91,7 +91,7 @@ class AuthControllerIT {
                 "password"
         );
 
-        mockMvc.perform(post("/api/auth/register/supplier")
+        mockMvc.perform(post("/api/v1/auth/register/supplier")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(supplierDto)))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ class AuthControllerIT {
     @Test
     void itShouldNotRegisterSupplierWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/auth/register/supplier")
+        mockMvc.perform(post("/api/v1/auth/register/supplier")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
@@ -114,7 +114,7 @@ class AuthControllerIT {
         ConfirmationToken confirmationToken = new ConfirmationToken(new Admin(1,"firstName","lastName"));
         String token = confirmationToken.getToken();
 
-        mockMvc.perform(get("/api/auth/confirm")
+        mockMvc.perform(get("/api/v1/auth/confirm")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("token", objectMapper.writeValueAsString(token)))
                 .andExpect(status().isOk());
@@ -124,7 +124,7 @@ class AuthControllerIT {
     @Test
     void itShouldNotConfirmTokenWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(get("/api/auth/confirm")
+        mockMvc.perform(get("/api/v1/auth/confirm")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 

@@ -52,7 +52,7 @@ class ImageProductsControllerIT {
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .multipart("/api/images/products/upload")
+                        .multipart("/api/v1/images/products/upload")
                         .file(sampleImage)
                         .param("product_id", objectMapper.writeValueAsString(productId))
                         .header("Authorization", token))
@@ -63,7 +63,7 @@ class ImageProductsControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/images/products/upload")
+        mockMvc.perform(post("/api/v1/images/products/upload")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());

@@ -45,7 +45,7 @@ class CategoriesControllerIT {
                 "name"
         );
 
-        mockMvc.perform(post("/api/categories/save")
+        mockMvc.perform(post("/api/v1/categories/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDto))
                         .header("Authorization", token))
@@ -57,7 +57,7 @@ class CategoriesControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/categories/save")
+        mockMvc.perform(post("/api/v1/categories/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -76,7 +76,7 @@ class CategoriesControllerIT {
 
         int id = categoryDao.findByName(name).getId();
 
-        mockMvc.perform(get("/api/categories/getById")
+        mockMvc.perform(get("/api/v1/categories/getById")
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -87,7 +87,7 @@ class CategoriesControllerIT {
     @Test
     void itShouldNotGetByIdWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/categories/getById")
+        mockMvc.perform(get("/api/v1/categories/getById")
                         .param("id", String.valueOf(1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -98,7 +98,7 @@ class CategoriesControllerIT {
     @Test
     void itShouldGetAll_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/categories/getAll")
+        mockMvc.perform(get("/api/v1/categories/getAll")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
@@ -115,7 +115,7 @@ class CategoriesControllerIT {
 
         categoryDao.save(category);
 
-        mockMvc.perform(get("/api/categories/getByName")
+        mockMvc.perform(get("/api/v1/categories/getByName")
                         .param("name", name)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -126,7 +126,7 @@ class CategoriesControllerIT {
     @Test
     void itShouldNotGetByNameWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/categories/getByName")
+        mockMvc.perform(get("/api/v1/categories/getByName")
                         .param("name", "name")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -137,7 +137,7 @@ class CategoriesControllerIT {
     @Test
     void itShouldNotGetByNameWhenRequestIsNotValid_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/categories/getByName")
+        mockMvc.perform(get("/api/v1/categories/getByName")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(false));

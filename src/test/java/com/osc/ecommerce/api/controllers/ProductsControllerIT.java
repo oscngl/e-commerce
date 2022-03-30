@@ -80,7 +80,7 @@ class ProductsControllerIT {
                 supplier
         );
 
-        mockMvc.perform(post("/api/products/save")
+        mockMvc.perform(post("/api/v1/products/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDto))
                         .header("Authorization", token))
@@ -92,7 +92,7 @@ class ProductsControllerIT {
     @Test
     void itShouldNotSaveWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(post("/api/products/save")
+        mockMvc.perform(post("/api/v1/products/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -127,7 +127,7 @@ class ProductsControllerIT {
 
         product.setPrice(2);
 
-        mockMvc.perform(put("/api/products/update")
+        mockMvc.perform(put("/api/v1/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(product))
                         .header("Authorization", token))
@@ -157,7 +157,7 @@ class ProductsControllerIT {
         product.setCategory(category);
         product.setSupplier(supplier);
 
-        mockMvc.perform(put("/api/products/update")
+        mockMvc.perform(put("/api/v1/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(product))
                         .header("Authorization", token))
@@ -169,7 +169,7 @@ class ProductsControllerIT {
     @Test
     void itShouldNotUpdateWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(put("/api/products/update")
+        mockMvc.perform(put("/api/v1/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -181,7 +181,7 @@ class ProductsControllerIT {
 
         int id = 1;
 
-        mockMvc.perform(put("/api/products/setDisable")
+        mockMvc.perform(put("/api/v1/products/setDisable")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", objectMapper.writeValueAsString(id))
                         .header("Authorization", token))
@@ -192,7 +192,7 @@ class ProductsControllerIT {
     @Test
     void itShouldNotSetDisableWhenRequestIsNotValid_isBadRequest() throws Exception {
 
-        mockMvc.perform(put("/api/products/setDisable")
+        mockMvc.perform(put("/api/v1/products/setDisable")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token))
                 .andExpect(status().isBadRequest());
@@ -225,7 +225,7 @@ class ProductsControllerIT {
         List<Product> list = productDao.findAll();
         int id = list.get(0).getId();
 
-        mockMvc.perform(get("/api/products/getById")
+        mockMvc.perform(get("/api/v1/products/getById")
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -236,7 +236,7 @@ class ProductsControllerIT {
     @Test
     void itShouldNotGetByIdWhenDoesNotExists_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/products/getById")
+        mockMvc.perform(get("/api/v1/products/getById")
                         .param("id", String.valueOf(1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -247,7 +247,7 @@ class ProductsControllerIT {
     @Test
     void itShouldGetAll_isOk() throws Exception {
 
-        mockMvc.perform(get("/api/products/getAll")
+        mockMvc.perform(get("/api/v1/products/getAll")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
@@ -265,7 +265,7 @@ class ProductsControllerIT {
 
         int categoryId = categoryDao.findByName(name).getId();
 
-        mockMvc.perform(get("/api/products/getAllByCategoryId")
+        mockMvc.perform(get("/api/v1/products/getAllByCategoryId")
                         .param("categoryId", String.valueOf(categoryId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -287,7 +287,7 @@ class ProductsControllerIT {
 
         int supplierId = supplierDao.findByConfirmedIsTrueAndEmail(email).getId();
 
-        mockMvc.perform(get("/api/products/getAllBySupplierId")
+        mockMvc.perform(get("/api/v1/products/getAllBySupplierId")
                         .param("supplierId", String.valueOf(supplierId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
