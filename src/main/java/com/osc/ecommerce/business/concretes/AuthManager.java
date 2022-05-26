@@ -31,7 +31,7 @@ public class AuthManager implements AuthService {
             return new ErrorDataResult<>(null, "Email already taken!");
         }
         String token = result.getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        String link = "http://localhost:3000/confirm-token/" + token;
         emailSenderService.send(adminDto.getEmail(), buildEmail(adminDto.getFirstName(), link));
         return new SuccessDataResult<>(token, "Admin registered.");
     }
@@ -43,7 +43,7 @@ public class AuthManager implements AuthService {
             return new ErrorDataResult<>(null, "Email already taken!");
         }
         String token = result.getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        String link = "http://localhost:3000/confirm-token/" + token;
         emailSenderService.send(customerDto.getEmail(), buildEmail(customerDto.getFirstName(), link));
         return new SuccessDataResult<>(token, "Customer registered.");
     }
@@ -55,7 +55,7 @@ public class AuthManager implements AuthService {
             return new ErrorDataResult<>(null, "Email already taken!");
         }
         String token = result.getData();
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+        String link = "http://localhost:3000/confirm-token/" + token;
         emailSenderService.send(supplierDto.getEmail(), buildEmail(supplierDto.getName(), link));
         return new SuccessDataResult<>(token, "Supplier registered.");
     }

@@ -18,6 +18,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -38,9 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(failureEntryPoint);
 
+        http.cors();
+
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v**/auth/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v**/auth/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v**/tokens/**").permitAll();
@@ -60,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v**/suppliers/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v**/suppliers/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v**/images/products/**").hasAnyAuthority("ROLE_SUPPLIER");
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v**/users/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -82,6 +89,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
 }
